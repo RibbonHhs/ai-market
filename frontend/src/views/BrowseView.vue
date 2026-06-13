@@ -29,7 +29,8 @@
               :tree-data="categoryTree"
               :expanded-keys="expandedKeys"
               @update:expanded-keys="(keys: string[]) => (expandedKeys = keys)"
-              :selected-keys="[selectedTreeKey]"
+              :selected-keys="selectedKeysArr"
+              @update:selected-keys="(keys: (string | number)[]) => (selectedKeysArr = keys as string[])"
               :field-names="{ title: 'name', key: 'slug', children: 'children' }"
               block-node
               show-line
@@ -196,6 +197,18 @@ const selectedTreeKey = computed(() => {
   return c?.slug || ''
 })
 
+/** 受控 selectedKeys：watch 同步推送到 a-tree，确保初次挂载即高亮。
+ * 之前用 `:selected-keys="[selectedTreeKey]"` 创建的是 inline array，
+ * a-tree 在 prop 频繁变化时不会重新渲染选中态。改成 watch→ref。 */
+const selectedKeysArr = ref<string[]>([])
+watch(
+  selectedTreeKey,
+  (slug) => {
+    selectedKeysArr.value = slug ? [slug] : []
+  },
+  { immediate: true }
+)
+
 /** 展开键：受控（v-model:expanded-keys）。
  * 包含「首个一级」+「选中节点的祖先链」—— 让树定位到 slug 对应节点。
  * S35-fix: 必须受控，否则 a-tree 的 default-expanded-keys 只在初次挂载生效，
@@ -320,8 +333,12 @@ function onTreeSelect(_keys: (string | number)[], info: { node: { dataRef?: Cate
   reload()
 }
 
-/** S18: 维度切换时重置过滤 */
+/** S18: 维度切换时重置过滤（用户主动切"按职业/按用途"radio 时触发）
+ * S35-fix: 当有 slug 路由时，applySlugFilter 会先 set dim 再 set activeCategoryId；
+ * 此时 watch(dim) 会在下一 tick 把 activeCategoryId 强制重置为 '0'，覆盖 slug 选择。
+ * 解决：有 slug 时让 applySlugFilter 全权管理状态，watch 不重置。 */
 watch(dim, () => {
+  if (route.params.slug) return
   activeCategoryId.value = '0'
   query.categoryId = undefined
   query.usageCategoryId = undefined
