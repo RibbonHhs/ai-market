@@ -133,9 +133,22 @@ public class SkillServiceImpl extends ServiceImpl<SkillMapper, Skill> implements
             }
             wrapper.in(Skill::getCategoryId, socIds);
         }
-        // S18: USAGE 维度过滤（与 SOC 独立，1:1 关系不展开子分类聚合）
+        // S18: USAGE 维度过滤（与 SOC 独立）
+        // S35-fix: skill.usage_category_id 存的是二级 USAGE id；父级（parentId==null）需要
+        // 展开到所有 sub-id 再 IN 查询，与 SOC 行为对齐。点击 /categories/:slug 上的父级卡片
+        // （如"开发"PURPOSE-DEV id=122）后，期望看到挂在子级（如"后端开发"id=148）上的 skill。
         if (q.getUsageCategoryId() != null) {
-            wrapper.eq(Skill::getUsageCategoryId, q.getUsageCategoryId());
+            java.util.List<Long> usageIds = new java.util.ArrayList<>();
+            usageIds.add(q.getUsageCategoryId());
+            Category uc = categoryMapper.selectById(q.getUsageCategoryId());
+            if (uc != null && uc.getParentId() == null) {
+                java.util.List<Category> uChildren = categoryMapper.selectList(
+                        new LambdaQueryWrapper<Category>().eq(Category::getParentId, q.getUsageCategoryId()));
+                for (Category ch : uChildren) {
+                    usageIds.add(ch.getId());
+                }
+            }
+            wrapper.in(Skill::getUsageCategoryId, usageIds);
         }
         if (StrUtil.isNotBlank(q.getSource())) {
             wrapper.eq(Skill::getSource, q.getSource());
