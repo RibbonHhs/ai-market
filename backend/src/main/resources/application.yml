@@ -1,0 +1,106 @@
+server:
+  port: ${SERVER-PORT:8767}
+  servlet:
+    context-path: /
+  compression:
+    enabled: true
+    mime-types: application/json,application/xml,text/html,text/plain
+
+spring:
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:dev}
+  application:
+    name: skills-map
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+    default-property-inclusion: non_null
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 20MB
+
+# Knife4j / springdoc
+springdoc:
+  api-docs:
+    enabled: ${SPRING-API-DOCS-ENABLED:true}
+    path: /v3/api-docs
+  swagger-ui:
+    enabled: ${SPRING-API-DOCS-ENABLED:true}
+    path: /swagger-ui.html
+knife4j:
+  enable: ${SPRING-API-DOCS-ENABLED:true}
+  setting:
+    language: zh_cn
+
+# MyBatis-Plus
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
+  global-config:
+    db-config:
+      id-type: AUTO
+      logic-delete-field: deleted
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+      insert-strategy: NOT_NULL
+      update-strategy: NOT_NULL
+  mapper-locations: classpath*:/mapper/**/*.xml
+  type-aliases-package: com.meiya.skillsmap.entity
+
+# Jasypt 加密
+jasypt:
+  encryptor:
+    password: ${JASYPT_PASSWORD:skillsmap-jasypt-key}
+    algorithm: PBEWithMD5AndDES
+
+# 项目自定义
+skillsmap:
+  # Sprint S23: 公开 API 限流（Bucket4j 按 IP）
+  # enabled 默认 false，运维确认后再打开（设置 SKILLSMAP_RATE_LIMIT_ENABLED=true）
+  rate-limit:
+    enabled: ${SKILLSMAP_RATE_LIMIT_ENABLED:false}
+    capacity: ${SKILLSMAP_RATE_LIMIT_CAPACITY:60}
+    refill-tokens: ${SKILLSMAP_RATE_LIMIT_REFILL_TOKENS:60}
+    refill-period: ${SKILLSMAP_RATE_LIMIT_REFILL_PERIOD:1m}
+  jwt:
+    secret: ${JWT_SECRET:skillsmap-jwt-secret-key-please-change-in-production-environment-2024}
+    expiration-seconds: 604800  # 7 days
+  seed:
+    enabled: ${SKILLSMAP_SEED_ENABLED:true}
+    local-skills-path: ${SKILLSMAP_LOCAL_SKILLS_PATH:C:/Users/86133/.claude/skills}
+    local-plugins-path: ${SKILLSMAP_LOCAL_PLUGINS_PATH:C:/Users/86133/.claude/plugins/marketplaces/claude-plugins-official/plugins}
+  storage:
+    packages-path: ${SKILLSMAP_STORAGE_PATH:./data/skill-packages}
+    max-file-size: ${SKILLSMAP_MAX_FILE_SIZE:20971520}  # 20MB
+    git:
+      enabled: ${SKILLSMAP_GIT_ENABLED:false}
+      repo-url: ${SKILLSMAP_GIT_REPO:https://github.com/RibbonHhs/skills.git}
+      username: ${SKILLSMAP_GIT_USER:}
+      token: ${SKILLSMAP_GIT_TOKEN:}
+      branch: ${SKILLSMAP_GIT_BRANCH:main}
+      work-dir: ${SKILLSMAP_GIT_WORK_DIR:./data/git-workdir}
+      author-name: ${SKILLSMAP_GIT_AUTHOR:SkillsMap}
+      author-email: ${SKILLSMAP_GIT_EMAIL:noreply@skillsmap.local}
+      pull-before-push: ${SKILLSMAP_GIT_PULL:true}
+  # Sprint S02: 通过 Git URL 上传的 Skill（独立缓存，不入主仓）
+  git-source:
+    enabled: ${SKILLSMAP_GIT_SOURCE_ENABLED:true}
+    depth: ${SKILLSMAP_GIT_SOURCE_DEPTH:1}
+    workdir: ${SKILLSMAP_GIT_SOURCE_WORKDIR:./data/skill-clones}
+    timeout-ms: ${SKILLSMAP_GIT_SOURCE_TIMEOUT:30000}
+    max-file-size: ${SKILLSMAP_GIT_SOURCE_MAX_FILE:52428800}    # 50MB
+    max-total-size: ${SKILLSMAP_GIT_SOURCE_MAX_TOTAL:524288000}  # 500MB
+    scheduler-enabled: ${SKILLSMAP_GIT_SOURCE_SCHED:true}
+    sync-cron: ${SKILLSMAP_GIT_SOURCE_CRON:0 0 */1 * * *}        # every 60 min
+    stale-threshold-minutes: ${SKILLSMAP_GIT_SOURCE_STALE:60}
+    max-concurrent: ${SKILLSMAP_GIT_SOURCE_CONCURRENT:3}
+
+logging:
+  level:
+    root: INFO
+    com.meiya.skillsmap: DEBUG
+    org.springframework.security: INFO
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"

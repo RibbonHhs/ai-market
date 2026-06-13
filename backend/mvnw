@@ -1,0 +1,26 @@
+#!/bin/sh
+# Maven Wrapper start script (POSIX + Windows-bash 兼容)
+# 优先用 $JAVA_HOME/bin/java；否则用 PATH 里的 java
+set -e
+DIR="$(cd "$(dirname "$0")" && pwd)"
+APP_HOME="$DIR"
+WRAPPER_JAR="$APP_HOME/.mvn/wrapper/maven-wrapper.jar"
+WRAPPER_LAUNCHER=org.apache.maven.wrapper.MavenWrapperMain
+
+# 寻找 java 可执行文件
+if [ -n "$JAVA_HOME" ] && [ -x "$JAVA_HOME/bin/java" ]; then
+  JAVA_CMD="$JAVA_HOME/bin/java"
+elif [ -x "/c/Program Files/Java/jdk-21.0.2/bin/java.exe" ]; then
+  JAVA_CMD="/c/Program Files/Java/jdk-21.0.2/bin/java.exe"
+elif command -v java >/dev/null 2>&1; then
+  JAVA_CMD="java"
+else
+  echo "[mvnw] ERROR: 找不到 java，请设置 JAVA_HOME 或将 java 加入 PATH" >&2
+  exit 1
+fi
+
+exec "$JAVA_CMD" \
+  ${MAVEN_OPTS:-} \
+  -classpath "$WRAPPER_JAR" \
+  "-Dmaven.multiModuleProjectDirectory=$APP_HOME" \
+  $WRAPPER_LAUNCHER "$@"

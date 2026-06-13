@@ -1,0 +1,66 @@
+001version: '3.8'+3256
+
+services:
+  mysql:
+    image: mysql:8.3
+    container_name: skillsmap-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: skillsmap_root
+      MYSQL_DATABASE: skillsmap
+      MYSQL_USER: skillsmap
+      MYSQL_PASSWORD: skillsmap
+      TZ: Asia/Shanghai
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+      - --default-time-zone=+08:00
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-u", "skillsmap", "-pskillsmap"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build: ./backend
+    container_name: skillsmap-backend
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: local
+      SERVER_PORT: 8767
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_NAME: skillsmap
+      DB_USER: skillsmap
+      DB_PASSWORD: skillsmap
+      JASYPT_PASSWORD: skillsmap-jasypt-key
+      JWT_SECRET: skillsmap-jwt-secret-key-please-change-in-production-environment-2024
+      SKILLSMAP_SEED_ENABLED: "true"
+      SKILLSMAP_LOCAL_SKILLS_PATH: /seed/skills
+      SKILLSMAP_LOCAL_PLUGINS_PATH: /seed/plugins
+      JAVA_OPTS: "-Xms256m -Xmx512m"
+    ports:
+      - "8767:8767"
+    volumes:
+      - ./seed-data/skills:/seed/skills:ro
+      - ./seed-data/plugins:/seed/plugins:ro
+
+  frontend:
+    build: ./frontend
+    container_name: skillsmap-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "7777:80"
+
+volumes:
+  mysql_data:
+    name: skillsmap_mysql_data

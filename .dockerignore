@@ -1,0 +1,14 @@
+node_modules
+target
+dist
+.git
+.idea
+*.iml
+.vscode
+*.log
+.env
+.env.*
+README.md
+CLAUDE.md
+docs
+seed-data

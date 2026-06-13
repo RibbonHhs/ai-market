@@ -1,0 +1,67 @@
+# Backend
+backend/target/
+backend/.mvn/wrapper/maven-wrapper.jar
+backend/*.log
+backend/.idea/
+backend/classes/
+backend/data/            # 上传的 Skill 包本地存储
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+frontend/*.log
+frontend/src/auto-imports.d.ts
+frontend/src/components.d.ts
+
+# IDE
+.idea/
+.vscode/
+*.iml
+*.iws
+*.ipr
+
+# Claude Code
+# 团队规约：.claude/CLAUDE.md（提交）
+# 个人覆盖：CLAUDE.md（忽略，仅本地生效）
+/CLAUDE.md
+!.claude/CLAUDE.md
+# 项目记忆：.claude/memory/（忽略，本机专属；如需团队共享单独 git add -f）
+/.claude/memory/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Env
+.env
+.env.local
+.env.*.local
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build outputs
+dist/
+build/
+out/
+
+# Test
+coverage/
+.nyc_output/
+frontend/test-results/
+frontend/playwright-report/
+frontend/playwright/.cache/
+
+# Sensitive / runtime artifacts
+token.out
+*.zip
+backend/data/skill-clones/
+backend/data/skill-packages/
+backend/data/git-workdir/
+backend/data/uploads/

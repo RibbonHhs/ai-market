@@ -1,0 +1,264 @@
+// 全局样式 — S29 v2
+// 16 token + 12 chip (浅 + 暗)
+:root {
+  // ===== S29 v2 浅色（默认） =====
+  --bg-primary:    #ffffff;
+  --bg-secondary:  #f7f7f8;
+  --bg-tertiary:   #f0f0f2;
+  --bg-elevated:   #ffffff;
+  --text-primary:    #1a1a1f;
+  --text-secondary:  #5a5a66;
+  --text-tertiary:   #9a9aa6;
+  --text-inverse:    #ffffff;
+  --primary:        #7c3aed;
+  --primary-bg:     #f3e8ff;
+  --primary-border: #ddd6fe;
+  --success: #10b981;
+  --warning: #f59e0b;
+  --danger:  #ef4444;
+  --link:    #7c3aed;
+  --border:        #e5e5ea;
+  --border-strong: #d1d1d6;
+  --shadow-sm: 0 1px 2px rgba(0,0,0,.04);
+  --shadow-md: 0 4px 12px rgba(0,0,0,.06);
+  --shadow-lg: 0 12px 32px rgba(0,0,0,.08);
+  --scrim:     rgba(0,0,0,.4);
+
+  // 兼容旧 token
+  --skillsmap-primary: var(--primary);
+  --skillsmap-bg: var(--bg-secondary);
+  --skillsmap-card-shadow: var(--shadow-sm), 0 1px 6px -1px rgba(0,0,0,.02);
+  --border-color: var(--border);
+}
+
+// ===== S29 v2 12 chip 浅色（bg + fg 各自一套，不再反相） =====
+:root {
+  --chip-default-bg: #F5F5F5;            --chip-default-fg: #595959;
+  --chip-purpose-tool-bg: #F0F5FF;       --chip-purpose-tool-fg: #1D39C4;
+  --chip-purpose-biz-bg: #FFF7E6;        --chip-purpose-biz-fg: #AD4E00;
+  --chip-purpose-dev-bg: #E6FFFB;        --chip-purpose-dev-fg: #006D75;
+  --chip-purpose-qasec-bg: #F9F0FF;      --chip-purpose-qasec-fg: #391085;
+  --chip-purpose-ai-bg: #FFF0F6;         --chip-purpose-ai-fg: #9E1068;
+  --chip-purpose-devops-bg: #FFF2E8;     --chip-purpose-devops-fg: #A8071A;
+  --chip-purpose-doc-bg: #FCFFE6;        --chip-purpose-doc-fg: #435106;
+  --chip-purpose-media-bg: #E6FAFF;      --chip-purpose-media-fg: #003A8C;
+  --chip-purpose-research-bg: #F0FBE6;   --chip-purpose-research-fg: #135200;
+  --chip-purpose-life-bg: #FFF1F0;       --chip-purpose-life-fg: #820014;
+  --chip-purpose-db-bg: #F4FFB8;         --chip-purpose-db-fg: #874D00;
+  --chip-purpose-blockchain-bg: #FFE7BA; --chip-purpose-blockchain-fg: #874D00;
+}
+
+// ===== 暗色（跟随系统） =====
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg-primary:    #15121f;
+    --bg-secondary:  #1c1830;
+    --bg-tertiary:   #25213a;
+    --bg-elevated:   #2d2842;
+    --text-primary:    rgba(255,255,255,0.92);
+    --text-secondary:  rgba(255,255,255,0.68);
+    --text-tertiary:   rgba(255,255,255,0.42);
+    --text-inverse:    #15121f;
+    --primary:        #a78bfa;
+    --primary-bg:     rgba(167,139,250,0.16);
+    --primary-border: rgba(167,139,250,0.32);
+    --success: #34d399;
+    --warning: #fbbf24;
+    --danger:  #f87171;
+    --link:    #a78bfa;
+    --border:        rgba(255,255,255,0.08);
+    --border-strong: rgba(255,255,255,0.16);
+    --shadow-sm: 0 1px 2px rgba(0,0,0,.4);
+    --shadow-md: 0 4px 12px rgba(0,0,0,.3), inset 0 1px 0 rgba(255,255,255,0.04);
+    --shadow-lg: 0 12px 32px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,0.06);
+    --scrim:     rgba(0,0,0,.6);
+
+    --skillsmap-bg: #15121f;
+    --border-color: rgba(255,255,255,0.08);
+
+    // 12 chip 暗色（16% alpha bg + 鲜亮 fg）
+    --chip-default-bg: #25213a;            --chip-default-fg: rgba(255,255,255,0.68);
+    --chip-purpose-tool-bg: rgba(96,165,250,0.16);       --chip-purpose-tool-fg: #93c5fd;
+    --chip-purpose-biz-bg: rgba(251,191,36,0.16);        --chip-purpose-biz-fg: #fcd34d;
+    --chip-purpose-dev-bg: rgba(52,211,153,0.16);        --chip-purpose-dev-fg: #6ee7b7;
+    --chip-purpose-qasec-bg: rgba(167,139,250,0.16);     --chip-purpose-qasec-fg: #c4b5fd;
+    --chip-purpose-ai-bg: rgba(244,114,182,0.16);        --chip-purpose-ai-fg: #f9a8d4;
+    --chip-purpose-devops-bg: rgba(248,113,113,0.16);    --chip-purpose-devops-fg: #fca5a5;
+    --chip-purpose-doc-bg: rgba(250,204,21,0.16);        --chip-purpose-doc-fg: #fde047;
+    --chip-purpose-media-bg: rgba(34,211,238,0.16);      --chip-purpose-media-fg: #67e8f9;
+    --chip-purpose-research-bg: rgba(132,204,22,0.16);   --chip-purpose-research-fg: #bef264;
+    --chip-purpose-life-bg: rgba(251,146,60,0.16);       --chip-purpose-life-fg: #fdba74;
+    --chip-purpose-db-bg: rgba(148,163,184,0.16);        --chip-purpose-db-fg: #cbd5e1;
+    --chip-purpose-blockchain-bg: rgba(217,119,6,0.16);  --chip-purpose-blockchain-fg: #fbbf24;
+  }
+}
+
+// ===== 暗色（data-theme="dark" 钩子） =====
+:root[data-theme="dark"] {
+  --bg-primary:    #15121f;
+  --bg-secondary:  #1c1830;
+  --bg-tertiary:   #25213a;
+  --bg-elevated:   #2d2842;
+  --text-primary:    rgba(255,255,255,0.92);
+  --text-secondary:  rgba(255,255,255,0.68);
+  --text-tertiary:   rgba(255,255,255,0.42);
+  --text-inverse:    #15121f;
+  --primary:        #a78bfa;
+  --primary-bg:     rgba(167,139,250,0.16);
+  --primary-border: rgba(167,139,250,0.32);
+  --success: #34d399;
+  --warning: #fbbf24;
+  --danger:  #f87171;
+  --link:    #a78bfa;
+  --border:        rgba(255,255,255,0.08);
+  --border-strong: rgba(255,255,255,0.16);
+  --shadow-sm: 0 1px 2px rgba(0,0,0,.4);
+  --shadow-md: 0 4px 12px rgba(0,0,0,.3), inset 0 1px 0 rgba(255,255,255,0.04);
+  --shadow-lg: 0 12px 32px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,0.06);
+  --scrim:     rgba(0,0,0,.6);
+
+  --skillsmap-bg: #15121f;
+  --border-color: rgba(255,255,255,0.08);
+
+  --chip-default-bg: #25213a;            --chip-default-fg: rgba(255,255,255,0.68);
+  --chip-purpose-tool-bg: rgba(96,165,250,0.16);       --chip-purpose-tool-fg: #93c5fd;
+  --chip-purpose-biz-bg: rgba(251,191,36,0.16);        --chip-purpose-biz-fg: #fcd34d;
+  --chip-purpose-dev-bg: rgba(52,211,153,0.16);        --chip-purpose-dev-fg: #6ee7b7;
+  --chip-purpose-qasec-bg: rgba(167,139,250,0.16);     --chip-purpose-qasec-fg: #c4b5fd;
+  --chip-purpose-ai-bg: rgba(244,114,182,0.16);        --chip-purpose-ai-fg: #f9a8d4;
+  --chip-purpose-devops-bg: rgba(248,113,113,0.16);    --chip-purpose-devops-fg: #fca5a5;
+  --chip-purpose-doc-bg: rgba(250,204,21,0.16);        --chip-purpose-doc-fg: #fde047;
+  --chip-purpose-media-bg: rgba(34,211,238,0.16);      --chip-purpose-media-fg: #67e8f9;
+  --chip-purpose-research-bg: rgba(132,204,22,0.16);   --chip-purpose-research-fg: #bef264;
+  --chip-purpose-life-bg: rgba(251,146,60,0.16);       --chip-purpose-life-fg: #fdba74;
+  --chip-purpose-db-bg: rgba(148,163,184,0.16);        --chip-purpose-db-fg: #cbd5e1;
+  --chip-purpose-blockchain-bg: rgba(217,119,6,0.16);  --chip-purpose-blockchain-fg: #fbbf24;
+}
+
+// ===== 浅色（data-theme="light" 显式） =====
+:root[data-theme="light"] {
+  --bg-primary:    #ffffff;
+  --bg-secondary:  #f7f7f8;
+  --bg-tertiary:   #f0f0f2;
+  --bg-elevated:   #ffffff;
+  --text-primary:    #1a1a1f;
+  --text-secondary:  #5a5a66;
+  --text-tertiary:   #9a9aa6;
+  --text-inverse:    #ffffff;
+  --primary:        #7c3aed;
+  --primary-bg:     #f3e8ff;
+  --primary-border: #ddd6fe;
+  --border:        #e5e5ea;
+  --border-strong: #d1d1d6;
+  --skillsmap-bg: #f7f7f8;
+  --border-color: #e5e5ea;
+}
+
+// ===== 12 chip className（直接绑 --chip-X-bg/fg，className 只换 chip 主题） =====
+.usage-chip {
+  background: var(--chip-default-bg);
+  color: var(--chip-default-fg);
+  border: 1px solid transparent;
+  border-radius: 4px;
+  padding: 0 8px;
+  height: 22px;
+  line-height: 20px;
+  font-size: 12px;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+.usage-chip--code-purpose-tool       { background: var(--chip-purpose-tool-bg);       color: var(--chip-purpose-tool-fg); }
+.usage-chip--code-purpose-biz        { background: var(--chip-purpose-biz-bg);        color: var(--chip-purpose-biz-fg); }
+.usage-chip--code-purpose-dev        { background: var(--chip-purpose-dev-bg);        color: var(--chip-purpose-dev-fg); }
+.usage-chip--code-purpose-qasec      { background: var(--chip-purpose-qasec-bg);      color: var(--chip-purpose-qasec-fg); }
+.usage-chip--code-purpose-ai         { background: var(--chip-purpose-ai-bg);         color: var(--chip-purpose-ai-fg); }
+.usage-chip--code-purpose-devops     { background: var(--chip-purpose-devops-bg);     color: var(--chip-purpose-devops-fg); }
+.usage-chip--code-purpose-doc        { background: var(--chip-purpose-doc-bg);        color: var(--chip-purpose-doc-fg); }
+.usage-chip--code-purpose-media      { background: var(--chip-purpose-media-bg);      color: var(--chip-purpose-media-fg); }
+.usage-chip--code-purpose-research   { background: var(--chip-purpose-research-bg);   color: var(--chip-purpose-research-fg); }
+.usage-chip--code-purpose-life       { background: var(--chip-purpose-life-bg);       color: var(--chip-purpose-life-fg); }
+.usage-chip--code-purpose-db         { background: var(--chip-purpose-db-bg);         color: var(--chip-purpose-db-fg); }
+.usage-chip--code-purpose-blockchain { background: var(--chip-purpose-blockchain-bg); color: var(--chip-purpose-blockchain-fg); }
+.usage-chip--code-default            { background: var(--chip-default-bg);            color: var(--chip-default-fg); }
+
+// ===== 基线 =====
+html,
+body,
+#app {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.skill-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  transition: box-shadow 0.2s, transform 0.2s, background 0.2s, border-color 0.2s;
+  &:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+    border-color: var(--border-strong);
+  }
+}
+
+// ===== Markdown =====
+.markdown-body {
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--text-primary);
+  pre {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 12px 16px;
+    overflow-x: auto;
+  }
+  code {
+    font-family: 'Fira Code', 'Consolas', monospace;
+    font-size: 0.9em;
+    background: var(--bg-tertiary);
+    border-radius: 3px;
+    padding: 0.2em 0.4em;
+  }
+  pre > code {
+    background: transparent;
+    padding: 0;
+  }
+  h1, h2, h3, h4 {
+    margin-top: 24px;
+    margin-bottom: 12px;
+    color: var(--text-primary);
+  }
+  a { color: var(--link); }
+}
+
+// ===== Danger 按钮 outline 风格（WCAG 5.2:1 通过） =====
+.btn-danger,
+.ant-btn-dangerous {
+  background: rgba(239, 68, 68, 0.12);
+  color: var(--danger);
+  border: 1px solid rgba(239, 68, 68, 0.40);
+  &:hover,
+  &:focus {
+    background: rgba(239, 68, 68, 0.18);
+    color: var(--danger);
+    border-color: var(--danger);
+  }
+}
+:root[data-theme="dark"] .btn-danger,
+:root[data-theme="dark"] .ant-btn-dangerous {
+  background: rgba(248, 113, 113, 0.12);
+  border-color: rgba(248, 113, 113, 0.40);
+}
+
+#nprogress .bar {
+  background: var(--primary) !important;
+}
