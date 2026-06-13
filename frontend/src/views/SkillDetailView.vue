@@ -18,11 +18,30 @@
                   <span class="badge">📦 {{ skill.name }}</span>
                   <span v-if="skill.license" class="badge">📄 {{ skill.license }}</span>
                   <span v-if="skill.authorName" class="badge">👤 {{ skill.authorName }}</span>
-                  <a-tag v-if="skill.categoryName" color="blue">
-                    <router-link :to="`/categories/${skill.categorySlug}`" style="color: inherit">
-                      {{ skill.categoryName }}
-                    </router-link>
-                  </a-tag>
+                </div>
+                <!-- S32: 职业 + 用途 同行（<UsageChip kind> 区分类型图标：occupation→ToolOutlined，usage→AimOutlined） -->
+                <div class="detail__categories">
+                  <UsageChip
+                    v-if="skill.categoryName"
+                    kind="occupation"
+                    :parent-name="skill.categoryName"
+                    size="md"
+                    clickable
+                    :to="skill.categorySlug ? { name: 'category-browse', params: { slug: skill.categorySlug } } : undefined"
+                    testid="skill-detail-soc-chip"
+                  />
+                  <UsageChip
+                    v-if="skill.usageCategory"
+                    kind="usage"
+                    :parent-code="skill.usageCategory.parentCode"
+                    :parent-name="skill.usageCategory.parentName"
+                    :child-name="skill.usageCategory.name"
+                    :skill-count="skill.usageCategory.skillCount"
+                    size="md"
+                    clickable
+                    :to="skill.usageCategorySlug ? { name: 'category-browse', params: { slug: skill.usageCategorySlug } } : undefined"
+                    testid="skill-detail-usage-chip"
+                  />
                 </div>
                 <p class="desc">{{ skill.description }}</p>
                 <div class="actions">
@@ -55,24 +74,7 @@
 
           <a-row :gutter="16" style="margin-top: 16px">
             <a-col :xs="24" :md="16">
-              <!-- S24: 用途区块（父类目 + 子类目 + 描述） -->
-              <div v-if="skill.usageCategory" class="detail__usage" data-testid="skill-usage-block">
-                <h3 class="detail__usage-title">🎯 用途</h3>
-                <div class="detail__usage-row">
-                  <span
-                    class="usage-chip"
-                    :class="`usage-chip--code-${(skill.usageCategory.parentCode || 'default').toLowerCase()}`"
-                  >
-                    <span class="usage-chip__emoji">{{ usageColor.emoji }}</span>
-                    <span class="usage-chip__parent">{{ skill.usageCategory.parentName }}</span>
-                    <span v-if="skill.usageCategory.name && skill.usageCategory.name !== skill.usageCategory.parentName" class="usage-chip__sep">→</span>
-                    <span v-if="skill.usageCategory.name && skill.usageCategory.name !== skill.usageCategory.parentName" class="usage-chip__child">{{ skill.usageCategory.name }}</span>
-                  </span>
-                </div>
-                <p v-if="skill.usageCategory.description" class="detail__usage-desc">
-                  💡 {{ skill.usageCategory.description }}
-                </p>
-              </div>
+              <!-- S32: 用途分类 chip 已上移至顶部 header（与 SkillCard / OccupationCard 统一） -->
 
               <!-- 标签 -->
               <div v-if="(skill.tags || []).length" class="detail__tags">
@@ -203,10 +205,10 @@ import {
 } from '@ant-design/icons-vue'
 import AppHeader from '@/components/AppHeader.vue'
 import MarkdownView from '@/components/MarkdownView.vue'
+import UsageChip from '@/components/UsageChip.vue'
 import { skillApi } from '@/api/skill'
 import { reviewApi, favoriteApi } from '@/api/review'
 import { useAuthStore } from '@/stores/auth'
-import { getUsageColor } from '@/constants/usage-colors'
 import type { Skill, Review } from '@/types/skill'
 
 const route = useRoute()
@@ -218,9 +220,6 @@ const reviews = ref<Review[]>([])
 const reviewLoading = ref(false)
 const showReviewModal = ref(false)
 const reviewForm = reactive({ rating: 5, comment: '' })
-
-/** S24: USAGE 配色（按 parentCode） */
-const usageColor = computed(() => getUsageColor(skill.value?.usageCategory?.parentCode))
 
 async function load() {
   loading.value = true
@@ -403,49 +402,13 @@ onMounted(load)
   padding: 12px 16px;
   margin-bottom: 16px;
 }
-/* S24: 用途区块 */
-.detail__usage {
-  background: var(--bg-secondary);
-  border-radius: 10px;
-  padding: 16px;
-  margin-bottom: 16px;
-}
-.detail__usage-title {
-  margin: 0 0 10px;
-  font-size: 15px;
-  font-weight: 600;
-  color: var(--text-primary);
-}
-.detail__usage-row {
-  margin-bottom: 6px;
-}
-.detail__usage-desc {
-  margin: 0;
-  font-size: 12px;
-  color: var(--text-tertiary);
-  line-height: 1.6;
-}
-.usage-chip {
-  display: inline-flex;
+/* S32+: 职业 + 用途 双 chip 同行（样式由 <UsageChip> 统一管） */
+.detail__categories {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 6px;
-  padding: 4px 12px;
-  border-radius: 14px;
-  font-size: 13px;
-  font-weight: 500;
-  border: 1px solid transparent;
-  line-height: 1.4;
-}
-.usage-chip__emoji {
-  font-size: 14px;
-  line-height: 1;
-}
-.usage-chip__sep {
-  opacity: 0.6;
-  margin: 0 2px;
-}
-.usage-chip__child {
-  font-weight: 600;
+  margin-top: 10px;
 }
 .detail__markdown,
 .detail__reviews {

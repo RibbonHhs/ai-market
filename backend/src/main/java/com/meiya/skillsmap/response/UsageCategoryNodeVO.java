@@ -25,11 +25,13 @@ public class UsageCategoryNodeVO {
     private String parentCode;
     /** 父类目中文名（一级 USAGE，如 开发） */
     private String parentName;
+    /** S33: 该 usage_category_id 直挂的 published skill 数（前端 chip "· N" + sidebar count）*/
+    private Integer skillCount;
 
     public UsageCategoryNodeVO() {}
 
     public UsageCategoryNodeVO(Long id, String code, String name, String slug, String description,
-                                Long parentId, String parentCode, String parentName) {
+                                Long parentId, String parentCode, String parentName, Integer skillCount) {
         this.id = id;
         this.code = code;
         this.name = name;
@@ -38,6 +40,7 @@ public class UsageCategoryNodeVO {
         this.parentId = parentId;
         this.parentCode = parentCode;
         this.parentName = parentName;
+        this.skillCount = skillCount;
     }
 
     public Long getId() { return id; }
@@ -56,4 +59,6 @@ public class UsageCategoryNodeVO {
     public void setParentCode(String parentCode) { this.parentCode = parentCode; }
     public String getParentName() { return parentName; }
     public void setParentName(String parentName) { this.parentName = parentName; }
+    public Integer getSkillCount() { return skillCount; }
+    public void setSkillCount(Integer skillCount) { this.skillCount = skillCount; }
 }

@@ -293,6 +293,11 @@ public class SkillServiceImpl extends ServiceImpl<SkillMapper, Skill> implements
                     node.setParentCode(ucat.getCode());
                     node.setParentName(ucat.getName());
                 }
+                // S33: 直挂到该 usage_category_id 的 published skill 数
+                Long count = baseMapper.selectCount(new LambdaQueryWrapper<Skill>()
+                        .eq(Skill::getUsageCategoryId, ucat.getId())
+                        .eq(Skill::getStatus, "published"));
+                node.setSkillCount(count == null ? 0 : count.intValue());
                 vo.setUsageCategory(node);
             }
         }

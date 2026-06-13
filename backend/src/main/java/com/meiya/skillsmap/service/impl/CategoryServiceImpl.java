@@ -48,14 +48,23 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
     }
 
     /**
-     * 一次查所有 published skill 的 category_id 分布（避免 N+1）。
+     * 一次查所有 published skill 的 category_id + usage_category_id 分布（避免 N+1）。
+     * <p>S33: 同时按 SOC(category_id) 与 USAGE(usage_category_id) 两个维度聚合。
+     * 两维度 id 互不重叠（USAGE code 为 PURPOSE-*，SOC code 为 #01 类），所以 merge 同 key 不会重复计数。
      */
     private Map<Long, Long> directSkillCountByCategory() {
         List<Skill> skills = skillMapper.selectList(new LambdaQueryWrapper<Skill>()
                 .eq(Skill::getStatus, "published"));
-        return skills.stream()
-                .filter(s -> s.getCategoryId() != null)
-                .collect(Collectors.groupingBy(Skill::getCategoryId, Collectors.counting()));
+        Map<Long, Long> result = new java.util.HashMap<>();
+        for (Skill s : skills) {
+            if (s.getCategoryId() != null) {
+                result.merge(s.getCategoryId(), 1L, Long::sum);
+            }
+            if (s.getUsageCategoryId() != null) {
+                result.merge(s.getUsageCategoryId(), 1L, Long::sum);
+            }
+        }
+        return result;
     }
 
     /**

@@ -84,6 +84,8 @@ export interface UsageCategoryNode {
   parentId?: number      // 父类目 id（一级 USAGE 的 id）
   parentCode?: string    // 父类目 code，如 PURPOSE-DEV（配色 key）
   parentName?: string    // 父类目中文名，如 "开发"
+  /** S33: 直挂该 usage_category_id 的 published skill 数（chip "· N" + sidebar count） */
+  skillCount?: number
 }
 
 export interface Tag {
