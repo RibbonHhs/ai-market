@@ -301,6 +301,41 @@ watch(dim, () => {
   reload()
 })
 
+/**
+ * S35: 根据 slug + 可选 type hint 应用分类过滤
+ * - 用于 onMounted 首次进入和 watch(slug) 路由复用场景
+ * - typeHint 优先（来自 query.type = USAGE / SOC），无则按 slug 全局匹配
+ */
+async function applySlugFilter(slug: string, typeHint?: string) {
+  if (!categories.value.length) {
+    await loadCategories()
+  }
+  const c = categories.value.find(
+    (cc) =>
+      cc.slug === slug &&
+      (!typeHint || (cc as Category & { type?: string }).type === typeHint)
+  )
+  if (!c) return false
+  const cType = (c as Category & { type?: string }).type
+  if (cType === 'USAGE') {
+    dim.value = 'usage'
+    activeCategoryId.value = c.id
+    query.usageCategoryId = c.id
+    query.categoryId = undefined
+    // 顶部 chip 联动：反查一级 USAGE，让对应 chip 高亮
+    const parentId = c.parentId ?? c.id
+    activeUsageTop.value = parentId
+  } else {
+    dim.value = 'soc'
+    activeCategoryId.value = c.id
+    query.categoryId = c.id
+    query.usageCategoryId = undefined
+    activeUsageTop.value = null
+  }
+  query.page = 1
+  return true
+}
+
 onMounted(async () => {
   await loadCategories()
   // 同步路由参数
@@ -310,19 +345,9 @@ onMounted(async () => {
   if (route.query.dim === 'usage') {
     dim.value = 'usage'
   }
+  // S35: slug 应用过滤（带 type hint 避免 USAGE/SOC 撞名风险）
   if (route.params.slug) {
-    const c = categories.value.find((cc) => cc.slug === route.params.slug)
-    if (c) {
-      const cType = (c as Category & { type?: string }).type
-      if (cType === 'USAGE') {
-        dim.value = 'usage'
-        activeCategoryId.value = c.id
-        query.usageCategoryId = c.id
-      } else {
-        activeCategoryId.value = c.id
-        query.categoryId = c.id
-      }
-    }
+    await applySlugFilter(String(route.params.slug), route.query.type as string | undefined)
   }
   reload()
 })
@@ -333,6 +358,17 @@ watch(
     if (v != null) {
       query.keyword = String(v)
       reload()
+    }
+  }
+)
+
+// S35: 路由复用（同组件 /categories/A → /categories/B）时重新应用 slug
+watch(
+  () => [route.params.slug, route.query.type],
+  async ([newSlug, newType]) => {
+    if (newSlug) {
+      const ok = await applySlugFilter(String(newSlug), newType as string | undefined)
+      if (ok) reload()
     }
   }
 )

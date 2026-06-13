@@ -29,6 +29,7 @@
             :key="cat.id"
             :category="cat"
             :index="idx"
+            :dim="dim"
           />
         </div>
       </section>

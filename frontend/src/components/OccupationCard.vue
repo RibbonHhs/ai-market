@@ -28,6 +28,8 @@ import type { Category } from '@/types/skill'
 const props = defineProps<{
   category: Category
   index?: number
+  /** S35: 维度类型（USAGE / SOC），用于跳转时带 query.type 避免 BrowseView 维度误判 */
+  dim?: 'USAGE' | 'SOC'
 }>()
 
 const router = useRouter()
@@ -43,7 +45,12 @@ function formatCount(n: number): string {
 }
 
 function go(slug: string) {
-  router.push({ name: 'category-browse', params: { slug } })
+  // S35: 带 query.type 让 BrowseView 显式知道当前是 USAGE 还是 SOC 维度
+  router.push({
+    name: 'category-browse',
+    params: { slug },
+    query: props.dim ? { type: props.dim } : {}
+  })
 }
 </script>
 
