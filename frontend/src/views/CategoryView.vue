@@ -23,14 +23,21 @@
           class="empty-block"
         />
 
-        <div v-else class="grid" role="list">
-          <OccupationCard
-            v-for="(cat, idx) in topLevel"
-            :key="cat.id"
-            :category="cat"
-            :index="idx"
-          />
-        </div>
+        <UsageCategoryGrid
+          v-else-if="!isSoc"
+          :categories="topLevel"
+          :loading="loading"
+          :empty-text="emptyText"
+          @select="onSelect"
+        />
+
+        <OccupationCategoryGrid
+          v-else
+          :categories="topLevel"
+          :loading="loading"
+          :empty-text="emptyText"
+          @select="onSelect"
+        />
       </section>
     </a-layout-content>
   </a-layout>
@@ -38,9 +45,10 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import AppHeader from '@/components/AppHeader.vue'
-import OccupationCard from '@/components/OccupationCard.vue'
+import UsageCategoryGrid from '@/components/UsageCategoryGrid.vue'
+import OccupationCategoryGrid from '@/components/OccupationCategoryGrid.vue'
 import { categoryApi } from '@/api/skill'
 import type { Category } from '@/types/skill'
 
@@ -50,6 +58,7 @@ interface CategoryNode extends Category {
 }
 
 const route = useRoute()
+const router = useRouter()
 const dim = computed<string>(() => (route.meta?.dim as string) || 'USAGE')
 
 const loading = ref(true)
@@ -84,6 +93,12 @@ const heroSub = computed(() =>
     : '按 Skill 在实际工作流中的主要用途归类'
 )
 const emptyText = computed(() => (isSoc.value ? '暂无职业分类' : '暂无用途分类'))
+
+/** S34: grid emit 的 select 事件 — 跳转 /category/:slug（与 chip 行为一致） */
+function onSelect(cat: Category) {
+  if (!cat.slug) return
+  router.push({ name: 'category-browse', params: { slug: cat.slug } })
+}
 
 onMounted(async () => {
   try {
@@ -199,18 +214,5 @@ onMounted(async () => {
 
 .empty-block {
   padding: 80px 0;
-}
-
-.grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
-
-  @media (max-width: 960px) {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  @media (max-width: 600px) {
-    grid-template-columns: 1fr;
-  }
 }
 </style>
