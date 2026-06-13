@@ -65,3 +65,7 @@ backend/data/skill-clones/
 backend/data/skill-packages/
 backend/data/git-workdir/
 backend/data/uploads/
+
+# Sprint-local tooling (e.g. qa-tina installed Playwright under docs/sprints/*/node_modules)
+docs/sprints/*/node_modules/
+docs/sprints/*/.package-lock.json

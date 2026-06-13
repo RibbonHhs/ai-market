@@ -393,7 +393,7 @@ watch(activeTab, (val, oldVal) => {
     border: none;
     border-radius: 999px;
     background: linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%);
-    color: var(--bg-primary);
+    color: #fff;
     font-size: 16px;
     font-weight: 600;
     cursor: pointer;

@@ -1,0 +1,602 @@
+[
+  {
+    "id": "T1",
+    "theme": "dark",
+    "name": "主标题 h1 on body",
+    "fg": {
+      "r": 236,
+      "g": 236,
+      "b": 237,
+      "alphaOrig": 0.92
+    },
+    "bg": {
+      "r": 21,
+      "g": 18,
+      "b": 31
+    },
+    "bgSource": "ant-layout-content app-content",
+    "bgImage": null,
+    "fontSize": "64px",
+    "fontWeight": "900",
+    "ratio": 15.63,
+    "required": 3,
+    "isLarge": true,
+    "status": "PASS"
+  },
+  {
+    "id": "T2",
+    "theme": "dark",
+    "name": "副文 on body",
+    "fg": {
+      "r": 180,
+      "g": 179,
+      "b": 183,
+      "alphaOrig": 0.68
+    },
+    "bg": {
+      "r": 21,
+      "g": 18,
+      "b": 31
+    },
+    "bgSource": "ant-layout-content app-content",
+    "bgImage": null,
+    "fontSize": "18px",
+    "fontWeight": "400",
+    "ratio": 8.85,
+    "required": 4.5,
+    "isLarge": false,
+    "status": "PASS"
+  },
+  {
+    "id": "T3",
+    "theme": "dark",
+    "name": "placeholder text on input-row",
+    "fg": {
+      "r": 255,
+      "g": 255,
+      "b": 255,
+      "alphaOrig": 0.85
+    },
+    "bg": {
+      "r": 37,
+      "g": 33,
+      "b": 58
+    },
+    "bgSource": "home-hero__input-row",
+    "bgImage": null,
+    "fontSize": "14px",
+    "fontWeight": "400",
+    "ratio": 15.47,
+    "required": 4.5,
+    "isLarge": false,
+    "status": "PASS"
+  },
+  {
+    "id": "T5",
+    "theme": "dark",
+    "name": "卡片标题 on home-hot__card",
+    "fg": {
+      "r": 237,
+      "g": 237,
+      "b": 238,
+      "alphaOrig": 0.92
+    },
+    "bg": {
+      "r": 28,
+      "g": 24,
+      "b": 48
+    },
+    "bgSource": "home-hot__card",
+    "bgImage": null,
+    "fontSize": "15px",
+    "fontWeight": "700",
+    "ratio": 14.68,
+    "required": 4.5,
+    "isLarge": false,
+    "status": "PASS"
+  },
+  {
+    "id": "T6",
+    "theme": "dark",
+    "name": "次文 on home-hot__card",
+    "fg": {
+      "r": 182,
+      "g": 181,
+      "b": 189,
+      "alphaOrig": 0.68
+    },
+    "bg": {
+      "r": 28,
+      "g": 24,
+      "b": 48
+    },
+    "bgSource": "home-hot__card",
+    "bgImage": null,
+    "fontSize": "13px",
+    "fontWeight": "400",
+    "ratio": 8.45,
+    "required": 4.5,
+    "isLarge": false,
+    "status": "PASS"
+  },
+  {
+    "id": "S1",
+    "theme": "dark",
+    "name": "卡评分 on home-hot__card",
+    "fg": {
+      "r": 251,
+      "g": 191,
+      "b": 36,
+      "alphaOrig": 1
+    },
+    "bg": {
+      "r": 28,
+      "g": 24,
+      "b": 48
+    },
+    "bgSource": "home-hot__card",
+    "bgImage": null,
+    "fontSize": "12px",
+    "fontWeight": "600",
+    "ratio": 10.29,
+    "required": 4.5,
+    "isLarge": false,
+    "status": "PASS"
+  },
+  {
+    "id": "S2",
+    "theme": "dark",
+    "name": "排行评分 on home-featured row",
+    "fg": {
+      "r": 251,
+      "g": 191,
+      "b": 36,
+      "alphaOrig": 1
+    },
+    "bg": {
+      "r": 21,
+      "g": 18,
+      "b": 31
+    },
+    "bgSource": "home-featured__layout",
+    "bgImage": null,
+    "fontSize": "12px",
+    "fontWeight": "600",
+    "ratio": 11.05,
+    "required": 4.5,
+    "isLarge": false,
+    "status": "PASS"
+  },
+  {
+    "id": "S3",
+    "theme": "dark",
+    "name": "排行数字 on row",
+    "fg": {
+      "r": 167,
+      "g": 139,
+      "b": 250,
+      "alphaOrig": 1
+    },
+    "bg": {
+      "r": 21,
+      "g": 18,
+      "b": 31
+    },
+    "bgSource": "home-featured__layout",
+    "bgImage": null,
+    "fontSize": "18px",
+    "fontWeight": "800",
+    "ratio": 6.78,
+    "required": 4.5,
+    "isLarge": false,
+    "status": "PASS"
+  },
+  {
+    "id": "S4",
+    "theme": "dark",
+    "name": "sidebar cat 文字",
+    "fg": {
+      "r": 236,
+      "g": 236,
+      "b": 237,
+      "alphaOrig": 0.92
+    },
+    "bg": {
+      "r": 21,
+      "g": 18,
+      "b": 31
+    },
+    "bgSource": "home-featured__cat is-active",
+    "bgImage": null,
+    "fontSize": "13px",
+    "fontWeight": "700",
+    "ratio": 15.63,
+    "required": 4.5,
+    "isLarge": false,
+    "status": "PASS"
+  },
+  {
+    "id": "B1",
+    "theme": "dark",
+    "name": "主搜索按钮 紫底白字",
+    "fg": {
+      "r": 255,
+      "g": 255,
+      "b": 255,
+      "alphaOrig": 1
+    },
+    "bg": {
+      "r": 102,
+      "g": 64,
+      "b": 166
+    },
+    "bgSource": "home-hero__input-row",
+    "bgImage": "linear-gradient(135deg, rgb(124, 58, 237) 0%, rgb(79, 70, 229) 100%)",
+    "fontSize": "16px",
+    "fontWeight": "600",
+    "ratio": 7.37,
+    "required": 4.5,
+    "isLarge": false,
+    "status": "PASS"
+  },
+  {
+    "id": "B2",
+    "theme": "dark",
+    "name": "CTA 紫边紫字",
+    "fg": {
+      "r": 167,
+      "g": 139,
+      "b": 250,
+      "alphaOrig": 1
+    },
+    "bg": {
+      "r": 45,
+      "g": 40,
+      "b": 66
+    },
+    "bgSource": "home-stats__cta-btn",
+    "bgImage": null,
+    "fontSize": "13px",
+    "fontWeight": "600",
+    "ratio": 5.17,
+    "required": 4.5,
+    "isLarge": false,
+    "status": "PASS"
+  },
+  {
+    "id": "B3",
+    "theme": "dark",
+    "name": "Tab is-active 紫底深字",
+    "fg": {
+      "r": 167,
+      "g": 139,
+      "b": 250,
+      "alphaOrig": 1
+    },
+    "bg": {
+      "r": 37,
+      "g": 33,
+      "b": 58
+    },
+    "bgSource": "home-hero__tab is-active",
+    "bgImage": null,
+    "fontSize": "15px",
+    "fontWeight": "600",
+    "ratio": 5.69,
+    "required": 4.5,
+    "isLarge": false,
+    "status": "PASS"
+  },
+  {
+    "id": "N1",
+    "theme": "dark",
+    "name": "search-card elevated on primary",
+    "fg": {
+      "r": 224,
+      "g": 223,
+      "b": 227,
+      "alphaOrig": 0.85
+    },
+    "bg": {
+      "r": 45,
+      "g": 40,
+      "b": 66
+    },
+    "bgSource": "home-hero__search-card",
+    "bgImage": null,
+    "fontSize": "14px",
+    "fontWeight": "400",
+    "ratio": 10.6,
+    "required": 4.5,
+    "isLarge": false,
+    "status": "PASS"
+  },
+  {
+    "id": "N4",
+    "theme": "dark",
+    "name": "HomeHot 卡片标题 on card",
+    "fg": {
+      "r": 237,
+      "g": 237,
+      "b": 238,
+      "alphaOrig": 0.92
+    },
+    "bg": {
+      "r": 28,
+      "g": 24,
+      "b": 48
+    },
+    "bgSource": "home-hot__card",
+    "bgImage": null,
+    "fontSize": "15px",
+    "fontWeight": "700",
+    "ratio": 14.68,
+    "required": 4.5,
+    "isLarge": false,
+    "status": "PASS"
+  },
+  {
+    "id": "N5",
+    "theme": "dark",
+    "name": "HomeFeatured sidebar cat",
+    "fg": {
+      "r": 236,
+      "g": 236,
+      "b": 237,
+      "alphaOrig": 0.92
+    },
+    "bg": {
+      "r": 21,
+      "g": 18,
+      "b": 31
+    },
+    "bgSource": "home-featured__cat is-active",
+    "bgImage": null,
+    "fontSize": "13px",
+    "fontWeight": "700",
+    "ratio": 15.63,
+    "required": 4.5,
+    "isLarge": false,
+    "status": "PASS"
+  },
+  {
+    "id": "N6",
+    "theme": "dark",
+    "name": "HomeFeatured 排行名 on row",
+    "fg": {
+      "r": 236,
+      "g": 236,
+      "b": 237,
+      "alphaOrig": 0.92
+    },
+    "bg": {
+      "r": 21,
+      "g": 18,
+      "b": 31
+    },
+    "bgSource": "home-featured__layout",
+    "bgImage": null,
+    "fontSize": "14px",
+    "fontWeight": "700",
+    "ratio": 15.63,
+    "required": 4.5,
+    "isLarge": false,
+    "status": "PASS"
+  },
+  {
+    "id": "N7",
+    "theme": "dark",
+    "name": "HomeStats 数字 on cell",
+    "fg": {
+      "r": 236,
+      "g": 236,
+      "b": 237,
+      "alphaOrig": 0.92
+    },
+    "bg": {
+      "r": 21,
+      "g": 18,
+      "b": 31
+    },
+    "bgSource": "home-stats__cell",
+    "bgImage": null,
+    "fontSize": "32px",
+    "fontWeight": "900",
+    "ratio": 15.63,
+    "required": 3,
+    "isLarge": true,
+    "status": "PASS"
+  },
+  {
+    "id": "T4",
+    "theme": "dark",
+    "name": "主色链接 on search-card",
+    "fg": {
+      "r": 224,
+      "g": 223,
+      "b": 227,
+      "alphaOrig": 0.85
+    },
+    "bg": {
+      "r": 45,
+      "g": 40,
+      "b": 66
+    },
+    "bgSource": "home-hero__search-card",
+    "bgImage": null,
+    "fontSize": "14px",
+    "fontWeight": "400",
+    "ratio": 10.6,
+    "required": 4.5,
+    "isLarge": false,
+    "status": "PASS"
+  },
+  {
+    "id": "B4",
+    "theme": "dark",
+    "name": "__agent-num 紫底深字",
+    "fg": {
+      "r": 238,
+      "g": 237,
+      "b": 239,
+      "alphaOrig": 0.92
+    },
+    "bg": {
+      "r": 37,
+      "g": 33,
+      "b": 58
+    },
+    "bgSource": "home-hero__agent-num",
+    "bgImage": null,
+    "fontSize": "13px",
+    "fontWeight": "700",
+    "ratio": 13.26,
+    "required": 4.5,
+    "isLarge": false,
+    "status": "PASS"
+  },
+  {
+    "id": "N2",
+    "theme": "dark",
+    "name": "__agent-cmd 暗底白字",
+    "fg": {
+      "r": 238,
+      "g": 238,
+      "b": 240,
+      "alphaOrig": 0.92
+    },
+    "bg": {
+      "r": 45,
+      "g": 40,
+      "b": 66
+    },
+    "bgSource": "home-hero__agent-cmd",
+    "bgImage": null,
+    "fontSize": "11px",
+    "fontWeight": "400",
+    "ratio": 12.13,
+    "required": 4.5,
+    "isLarge": false,
+    "status": "PASS"
+  },
+  {
+    "id": "L1",
+    "theme": "light",
+    "name": "浅色：主标题 on bg",
+    "fg": {
+      "r": 26,
+      "g": 26,
+      "b": 31,
+      "alphaOrig": 1
+    },
+    "bg": {
+      "r": 255,
+      "g": 255,
+      "b": 255
+    },
+    "bgSource": "ant-layout-content app-content",
+    "bgImage": null,
+    "fontSize": "64px",
+    "fontWeight": "900",
+    "ratio": 17.33,
+    "required": 3,
+    "isLarge": true,
+    "status": "PASS"
+  },
+  {
+    "id": "L2",
+    "theme": "light",
+    "name": "浅色：home-hot 卡片标题",
+    "fg": {
+      "r": 26,
+      "g": 26,
+      "b": 31,
+      "alphaOrig": 1
+    },
+    "bg": {
+      "r": 247,
+      "g": 247,
+      "b": 248
+    },
+    "bgSource": "home-hot__card",
+    "bgImage": null,
+    "fontSize": "15px",
+    "fontWeight": "700",
+    "ratio": 16.19,
+    "required": 4.5,
+    "isLarge": false,
+    "status": "PASS"
+  },
+  {
+    "id": "L3",
+    "theme": "light",
+    "name": "浅色：home-hot 卡片次文",
+    "fg": {
+      "r": 90,
+      "g": 90,
+      "b": 102,
+      "alphaOrig": 1
+    },
+    "bg": {
+      "r": 247,
+      "g": 247,
+      "b": 248
+    },
+    "bgSource": "home-hot__card",
+    "bgImage": null,
+    "fontSize": "13px",
+    "fontWeight": "400",
+    "ratio": 6.35,
+    "required": 4.5,
+    "isLarge": false,
+    "status": "PASS"
+  },
+  {
+    "id": "L4",
+    "theme": "light",
+    "name": "浅色：home-hot card-rate",
+    "fg": {
+      "r": 180,
+      "g": 83,
+      "b": 9,
+      "alphaOrig": 1
+    },
+    "bg": {
+      "r": 247,
+      "g": 247,
+      "b": 248
+    },
+    "bgSource": "home-hot__card",
+    "bgImage": null,
+    "fontSize": "12px",
+    "fontWeight": "600",
+    "ratio": 4.69,
+    "required": 4.5,
+    "isLarge": false,
+    "status": "PASS"
+  },
+  {
+    "id": "L5",
+    "theme": "light",
+    "name": "浅色：home-hot 卡片作者",
+    "fg": {
+      "r": 90,
+      "g": 90,
+      "b": 102,
+      "alphaOrig": 1
+    },
+    "bg": {
+      "r": 247,
+      "g": 247,
+      "b": 248
+    },
+    "bgSource": "home-hot__card",
+    "bgImage": null,
+    "fontSize": "12px",
+    "fontWeight": "400",
+    "ratio": 6.35,
+    "required": 4.5,
+    "isLarge": false,
+    "status": "PASS"
+  }
+]
