@@ -46,6 +46,14 @@ S32 设计/实现都没要求 chip 渲染 count，所以前后端都没有这条
 | `frontend/src/components/SkillCard.vue` | 透传 `:skill-count="skill.usageCategory?.skillCount"` 到 UsageChip |
 | `frontend/src/views/SkillDetailView.vue` | 同 SkillCard |
 
+### 3.2.1 S33-followup（2026-06-13 后续）
+
+按用户最新诉求「在 skill 详情以及浏览页面中的用途分类的标签，不需要带有总数」，**移除了 SkillCard + SkillDetailView 上 UsageChip 的 `:skill-count` prop 绑定**。后端字段、`UsageChip` prop 本身保留，其他调用方（`OccupationCard` 等）按需启用。
+
+- 改动文件：`SkillCard.vue`、`SkillDetailView.vue`（各删 1 行 `:skill-count="..."`）
+- 视觉：chip 不再渲染 ` · N`；aria-label 也不带"（N 个 skill）"后缀
+- 后端契约不变；`UsageCategoryNode.skillCount` 仍由后端写入
+
 ### 3.3 文档 (3 文件)
 
 | 文件 | 用途 |

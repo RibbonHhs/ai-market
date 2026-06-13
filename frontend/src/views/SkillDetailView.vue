@@ -36,7 +36,6 @@
                     :parent-code="skill.usageCategory.parentCode"
                     :parent-name="skill.usageCategory.parentName"
                     :child-name="skill.usageCategory.name"
-                    :skill-count="skill.usageCategory.skillCount"
                     size="md"
                     clickable
                     :to="skill.usageCategorySlug ? { name: 'category-browse', params: { slug: skill.usageCategorySlug } } : undefined"
