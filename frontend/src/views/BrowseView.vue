@@ -188,6 +188,14 @@ const categoryTree = computed<CategoryTreeNode[]>(() => {
   })
 })
 
+/** 当前选中节点的 tree key（slug），用于高亮 + 祖先链展开
+ * 必须先声明，因为下方 watch 用了它，且 immediate:true 会同步触发 */
+const selectedTreeKey = computed(() => {
+  if (activeCategoryId.value === '0') return ''
+  const c = categories.value.find((cc) => cc.id === activeCategoryId.value)
+  return c?.slug || ''
+})
+
 /** 展开键：受控（v-model:expanded-keys）。
  * 包含「首个一级」+「选中节点的祖先链」—— 让树定位到 slug 对应节点。
  * S35-fix: 必须受控，否则 a-tree 的 default-expanded-keys 只在初次挂载生效，
@@ -219,13 +227,6 @@ watch(
   },
   { immediate: true }
 )
-
-/** 当前选中节点的 tree key（slug），用于高亮 */
-const selectedTreeKey = computed(() => {
-  if (activeCategoryId.value === '0') return ''
-  const c = categories.value.find((cc) => cc.id === activeCategoryId.value)
-  return c?.slug || ''
-})
 
 const query = reactive<SkillQuery>({
   keyword: '',
