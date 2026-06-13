@@ -187,10 +187,30 @@ const categoryTree = computed<CategoryTreeNode[]>(() => {
   })
 })
 
-/** 默认展开第一个一级（避免侧栏太长） */
+/** 默认展开首个一级 + 选中节点的祖先链（让树定位到 slug 对应节点）
+ * - 默认展开第一个一级：避免侧栏一进去全折叠看不到东西
+ * - S35-fix: 选中节点的祖先链也要展开，否则高亮被折叠不可见
+ *   （如 /categories/PURPOSE-DEV-BACKEND-后端开发 跳过来时父级 PURPOSE-DEV 没展开）
+ */
 const defaultExpandedKeys = computed(() => {
+  const keys = new Set<string>()
   const first = categoryTree.value[0]
-  return first ? [first.slug] : []
+  if (first) keys.add(first.slug)
+  if (selectedTreeKey.value) {
+    const c = categories.value.find((cc) => cc.slug === selectedTreeKey.value)
+    if (c?.parentId) {
+      let cur: Category | undefined = categories.value.find(
+        (cc) => cc.id === c.parentId
+      )
+      while (cur) {
+        if (cur.slug) keys.add(cur.slug)
+        cur = cur.parentId
+          ? categories.value.find((cc) => cc.id === cur!.parentId)
+          : undefined
+      }
+    }
+  }
+  return Array.from(keys)
 })
 
 /** 当前选中节点的 tree key（slug），用于高亮 */
