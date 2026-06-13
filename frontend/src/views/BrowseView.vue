@@ -27,7 +27,8 @@
               :key="dim"
               class="cat-tree"
               :tree-data="categoryTree"
-              :default-expanded-keys="defaultExpandedKeys"
+              :expanded-keys="expandedKeys"
+              @update:expanded-keys="(keys: string[]) => (expandedKeys = keys)"
               :selected-keys="[selectedTreeKey]"
               :field-names="{ title: 'name', key: 'slug', children: 'children' }"
               block-node
@@ -187,31 +188,37 @@ const categoryTree = computed<CategoryTreeNode[]>(() => {
   })
 })
 
-/** 默认展开首个一级 + 选中节点的祖先链（让树定位到 slug 对应节点）
- * - 默认展开第一个一级：避免侧栏一进去全折叠看不到东西
- * - S35-fix: 选中节点的祖先链也要展开，否则高亮被折叠不可见
- *   （如 /categories/PURPOSE-DEV-BACKEND-后端开发 跳过来时父级 PURPOSE-DEV 没展开）
+/** 展开键：受控（v-model:expanded-keys）。
+ * 包含「首个一级」+「选中节点的祖先链」—— 让树定位到 slug 对应节点。
+ * S35-fix: 必须受控，否则 a-tree 的 default-expanded-keys 只在初次挂载生效，
+ * 同维度跳转（USAGE→USAGE）时树不重挂载，新键不生效。
  */
-const defaultExpandedKeys = computed(() => {
-  const keys = new Set<string>()
-  const first = categoryTree.value[0]
-  if (first) keys.add(first.slug)
-  if (selectedTreeKey.value) {
-    const c = categories.value.find((cc) => cc.slug === selectedTreeKey.value)
-    if (c?.parentId) {
-      let cur: Category | undefined = categories.value.find(
-        (cc) => cc.id === c.parentId
-      )
-      while (cur) {
-        if (cur.slug) keys.add(cur.slug)
-        cur = cur.parentId
-          ? categories.value.find((cc) => cc.id === cur!.parentId)
-          : undefined
+const expandedKeys = ref<string[]>([])
+
+watch(
+  [categoryTree, selectedTreeKey, () => categories.value.length],
+  () => {
+    const keys = new Set<string>()
+    const first = categoryTree.value[0]
+    if (first) keys.add(first.slug)
+    if (selectedTreeKey.value) {
+      const c = categories.value.find((cc) => cc.slug === selectedTreeKey.value)
+      if (c?.parentId) {
+        let cur: Category | undefined = categories.value.find(
+          (cc) => cc.id === c.parentId
+        )
+        while (cur) {
+          if (cur.slug) keys.add(cur.slug)
+          cur = cur.parentId
+            ? categories.value.find((cc) => cc.id === cur!.parentId)
+            : undefined
+        }
       }
     }
-  }
-  return Array.from(keys)
-})
+    expandedKeys.value = Array.from(keys)
+  },
+  { immediate: true }
+)
 
 /** 当前选中节点的 tree key（slug），用于高亮 */
 const selectedTreeKey = computed(() => {
