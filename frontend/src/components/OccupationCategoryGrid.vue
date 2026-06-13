@@ -14,44 +14,24 @@
       :style="{ '--i': idx }"
       role="listitem"
       tabindex="0"
-      :aria-label="ariaLabelFor(cat)"
+      :aria-label="`${cat.name}，${cat.skillCount ?? 0} 个技能`"
       @click="onSelect(cat)"
       @keydown.enter="onSelect(cat)"
       @keydown.space.prevent="onSelect(cat)"
     >
-      <!-- 序号大字（保留 S32 装饰资产） -->
-      <div class="occ-card__index" aria-hidden="true">{{ padIndex(idx) }}</div>
-
-      <div class="occ-card__head">
-        <!-- S34: icon-tile — 蓝色统一（S32 chip-occupation 一致） -->
-        <div class="occ-card__tile" aria-hidden="true">
-          <ToolOutlined class="occ-card__icon" />
-        </div>
-        <div class="occ-card__title-block">
-          <h3 class="occ-card__title">{{ cat.name }}</h3>
-          <code class="occ-card__code">{{ cat.code || 'SOC' }}</code>
-        </div>
-      </div>
-
-      <p v-if="cat.description" class="occ-card__desc">{{ cat.description }}</p>
-      <p v-else class="occ-card__desc occ-card__desc--muted">{{ subHint(cat) }}</p>
-
-      <div class="occ-card__foot">
-        <span class="occ-card__count" :aria-label="`${cat.skillCount ?? 0} 个技能`">
-          <span class="occ-card__count-num">{{ formatCount(cat.skillCount ?? 0) }}</span>
-          <span class="occ-card__count-unit">个技能</span>
-        </span>
-        <span v-if="cat.slug" class="occ-card__arrow" aria-hidden="true">→</span>
+      <h3 class="occ-card__name">{{ cat.name }}</h3>
+      <div class="occ-card__count" :aria-hidden="true">
+        <span class="occ-card__count-num">{{ cat.skillCount ?? 0 }}</span>
+        <span class="occ-card__count-unit">个技能</span>
       </div>
     </article>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ToolOutlined } from '@ant-design/icons-vue'
 import type { Category } from '@/types/skill'
 
-const props = withDefaults(defineProps<{
+withDefaults(defineProps<{
   categories: Category[]
   loading?: boolean
   emptyText?: string
@@ -63,27 +43,6 @@ const props = withDefaults(defineProps<{
 const emit = defineEmits<{
   (e: 'select', category: Category): void
 }>()
-
-function padIndex(idx: number): string {
-  return String((idx ?? 0) + 1).padStart(2, '0')
-}
-
-function formatCount(n: number): string {
-  if (n >= 10000) return (n / 10000).toFixed(1).replace(/\.0$/, '') + ' 万'
-  if (n >= 1000) return (n / 1000).toFixed(1).replace(/\.0$/, '') + ' 千'
-  return String(n)
-}
-
-function ariaLabelFor(cat: Category): string {
-  const sub = subHint(cat)
-  const count = cat.skillCount ?? 0
-  return `职业分类：${cat.name}，${sub}，${formatCount(count)} 个技能`
-}
-
-function subHint(cat: Category): string {
-  if (!cat.parentId) return '主要职业组'
-  return '细分职位'
-}
 
 function onSelect(cat: Category) {
   emit('select', cat)
@@ -111,38 +70,36 @@ function onSelect(cat: Category) {
   }
 }
 
-/* S34: 大卡片 — 与 USAGE 节奏一致，序号大字保留（S32 装饰资产） */
+/* S34-followup: 极简大卡片 — indigo 渐变背景 + 名称 + 计数 */
 .occ-card {
   position: relative;
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  padding: 20px 20px 18px;
-  min-height: 156px;
-  background: var(--bg-secondary, #ffffff);
-  border: 1px solid var(--border-color, #e5e7eb);
-  border-radius: 16px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 2px 6px rgba(0, 0, 0, 0.03);
+  justify-content: space-between;
+  padding: 28px 24px;
+  min-height: 168px;
+  border-radius: 20px;
+  background:
+    radial-gradient(140% 110% at 100% 0%, #ede9fe 0%, transparent 60%),
+    linear-gradient(180deg, #eef2ff 0%, #f5f3ff 100%);
   cursor: default;
   outline: none;
   animation: occ-card-in 360ms cubic-bezier(0.16, 1, 0.3, 1) both;
   animation-delay: calc(var(--i, 0) * 40ms);
   transition:
-    transform 200ms cubic-bezier(0.16, 1, 0.3, 1),
-    box-shadow 200ms ease-out,
-    border-color 200ms ease-out;
+    transform 240ms cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 240ms ease-out;
 }
 
 .occ-card--clickable {
   cursor: pointer;
   &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 24px -6px rgba(0, 0, 0, 0.10);
-    border-color: #6366f1;
+    transform: translateY(-3px);
+    box-shadow: 0 12px 28px -10px rgba(99, 102, 241, 0.35);
   }
   &:active {
-    transform: translateY(0) scale(0.98);
+    transform: translateY(-1px) scale(0.99);
     transition-duration: 120ms;
   }
   &:focus-visible {
@@ -151,143 +108,38 @@ function onSelect(cat: Category) {
   }
 }
 
-/* S32 序号大字保留为右下角装饰 */
-.occ-card__index {
-  position: absolute;
-  top: 50%;
-  right: 14px;
-  transform: translateY(-50%);
-  font-size: 88px;
-  font-weight: 800;
-  color: #f3f4f6;
-  line-height: 1;
-  letter-spacing: -3px;
-  pointer-events: none;
-  user-select: none;
-  font-variant-numeric: tabular-nums;
-  z-index: 0;
-}
-
-.occ-card--clickable:hover .occ-card__index {
-  color: #ede9fe;
-}
-
-.occ-card__head {
-  position: relative;
-  z-index: 1;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-/* S34: 蓝色 icon-tile，与 S32 chip-occupation 一致 */
-.occ-card__tile {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
-  background: #e6f4ff;
-  color: #0958d9;
-  flex-shrink: 0;
-
-  @media (max-width: 480px) {
-    width: 44px;
-    height: 44px;
-  }
-}
-
-.occ-card__icon {
-  font-size: 22px;
-  line-height: 1;
-  :deep(svg) {
-    width: 1em;
-    height: 1em;
-    fill: currentColor;
-  }
-}
-
-.occ-card__title-block {
-  flex: 1;
-  min-width: 0;
-}
-
-.occ-card__title {
+.occ-card__name {
   margin: 0;
-  font-size: clamp(15px, 1.4vw, 17px);
+  font-size: clamp(20px, 1.8vw, 24px);
   font-weight: 700;
-  color: var(--text-primary, #111827);
-  line-height: 1.3;
+  color: #1e1b4b;
   letter-spacing: -0.01em;
+  line-height: 1.25;
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.occ-card__code {
-  display: inline-block;
-  margin-top: 2px;
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 11px;
-  color: var(--text-tertiary, #9ca3af);
-}
-
-.occ-card__desc {
-  position: relative;
-  z-index: 1;
-  margin: 0;
-  font-size: 13px;
-  font-weight: 400;
-  color: var(--text-secondary, #6b7280);
-  line-height: 1.5;
   display: -webkit-box;
-  -webkit-line-clamp: 1;
+  -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
-  overflow: hidden;
-
-  &--muted {
-    color: var(--text-tertiary, #9ca3af);
-  }
-}
-
-.occ-card__foot {
-  position: relative;
-  z-index: 1;
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  margin-top: auto;
-  padding-top: 4px;
 }
 
 .occ-card__count {
-  display: inline-flex;
+  display: flex;
   align-items: baseline;
-  gap: 4px;
+  gap: 6px;
+  margin-top: 16px;
 
   &-num {
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--text-primary, #111827);
+    font-size: 28px;
+    font-weight: 700;
+    color: #4338ca;
     font-variant-numeric: tabular-nums;
+    line-height: 1;
   }
   &-unit {
-    font-size: 12px;
-    color: var(--text-tertiary, #9ca3af);
+    font-size: 13px;
+    color: #6d28d9;
+    font-weight: 500;
   }
-}
-
-.occ-card__arrow {
-  font-size: 18px;
-  line-height: 1;
-  color: var(--text-tertiary, #9ca3af);
-  transition: transform 200ms ease-out, color 200ms ease-out;
-}
-
-.occ-card--clickable:hover .occ-card__arrow {
-  transform: translateX(3px);
-  color: #6366f1;
 }
 
 @keyframes occ-card-in {
@@ -309,22 +161,22 @@ function onSelect(cat: Category) {
       transform: none;
     }
   }
-  .occ-card--clickable:hover .occ-card__arrow {
-    transform: none;
-  }
 }
 
 @media (prefers-color-scheme: dark) {
   .occ-card:not([data-theme='light']) {
-    background: #1c1c1f;
-    border-color: rgba(255, 255, 255, 0.08);
+    background:
+      radial-gradient(140% 110% at 100% 0%, rgba(99, 102, 241, 0.20) 0%, transparent 60%),
+      linear-gradient(180deg, rgba(99, 102, 241, 0.10) 0%, rgba(139, 92, 246, 0.08) 100%);
   }
-  .occ-card:not([data-theme='light']) .occ-card__index {
-    color: rgba(255, 255, 255, 0.04);
+  .occ-card:not([data-theme='light']) .occ-card__name {
+    color: #c7d2fe;
   }
-  .occ-card:not([data-theme='light']) .occ-card__tile {
-    background: rgba(96, 165, 250, 0.16);
-    color: #93c5fd;
+  .occ-card:not([data-theme='light']) .occ-card__count-num {
+    color: #a5b4fc;
+  }
+  .occ-card:not([data-theme='light']) .occ-card__count-unit {
+    color: rgba(199, 210, 254, 0.7);
   }
 }
 </style>

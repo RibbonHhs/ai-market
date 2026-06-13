@@ -14,44 +14,26 @@
       :style="cardStyle(cat, idx)"
       role="listitem"
       tabindex="0"
-      :aria-label="ariaLabelFor(cat)"
+      :aria-label="`${cat.name}，${cat.skillCount ?? 0} 个 skill`"
       @click="onSelect(cat)"
       @keydown.enter="onSelect(cat)"
       @keydown.space.prevent="onSelect(cat)"
     >
-      <!-- S34: icon-tile — 浅色 USAGE bg + fg；暗色态 16% rgba + 鲜亮 fg -->
-      <div class="usage-card__tile" aria-hidden="true">
-        <AimOutlined class="usage-card__icon" />
-      </div>
-
-      <div class="usage-card__body">
-        <div class="usage-card__head">
-          <h3 class="usage-card__title">{{ cat.name }}</h3>
-          <code class="usage-card__code">{{ parentCodeOf(cat) }}</code>
-        </div>
-        <p v-if="cat.description" class="usage-card__desc">{{ cat.description }}</p>
-        <p v-else class="usage-card__desc usage-card__desc--muted">
-          {{ subHint(cat) }}
-        </p>
-        <div class="usage-card__foot">
-          <span class="usage-card__count" :aria-label="`${cat.skillCount ?? 0} 个 skill`">
-            <span class="usage-card__count-num">{{ cat.skillCount ?? 0 }}</span>
-            <span class="usage-card__count-unit">个 skill</span>
-          </span>
-          <span v-if="cat.slug" class="usage-card__arrow" aria-hidden="true">→</span>
-        </div>
+      <h3 class="usage-card__name">{{ cat.name }}</h3>
+      <div class="usage-card__count" :aria-hidden="true">
+        <span class="usage-card__count-num">{{ cat.skillCount ?? 0 }}</span>
+        <span class="usage-card__count-unit">个 skill</span>
       </div>
     </article>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, CSSProperties } from 'vue'
-import { AimOutlined } from '@ant-design/icons-vue'
+import { CSSProperties } from 'vue'
 import { getUsageColor, getUsageDarkColor } from '@/constants/usage-colors'
 import type { Category } from '@/types/skill'
 
-const props = withDefaults(defineProps<{
+withDefaults(defineProps<{
   categories: Category[]
   loading?: boolean
   emptyText?: string
@@ -64,41 +46,45 @@ const emit = defineEmits<{
   (e: 'select', category: Category): void
 }>()
 
-/** parentCode 取色（浅色 + 暗色两套；CSS 变量交给样式层切） */
+/** 按 parentCode 取浅色 + 暗色两套 */
 function paletteOf(cat: Category) {
   const code = (cat.code || '').split('-').slice(0, 2).join('-') || null
-  return {
-    light: getUsageColor(code),
-    dark: getUsageDarkColor(code)
-  }
+  return { light: getUsageColor(code), dark: getUsageDarkColor(code) }
 }
 
-/** 显示在卡片小字位的父级 code（如 PURPOSE-DEV） */
-function parentCodeOf(cat: Category): string {
-  const code = cat.code || ''
-  return code ? code.split('-').slice(0, 2).join('-') : ''
-}
-
-function ariaLabelFor(cat: Category): string {
-  const sub = subHint(cat)
-  const count = cat.skillCount ?? 0
-  return `用途分类：${cat.name}，${sub}，${count} 个 skill`
-}
-
-function subHint(cat: Category): string {
-  const totalChildren = (props.categories || []).filter((c) => c.parentId === cat.id).length
-  if (totalChildren > 0) return `${totalChildren} 个细分用途`
-  return '主要用途'
-}
-
-/** 把 USAGE 配色注入 CSS 变量；父组件不需要知道怎么配色 */
+/** 注入渐变背景：USAGE 浅色主色 + 邻色高光，制造柔和渐变 */
 function cardStyle(cat: Category, idx: number): CSSProperties {
   const { light } = paletteOf(cat)
   return {
     ['--i' as string]: idx,
-    ['--tile-bg' as string]: light.bg,
-    ['--tile-fg' as string]: light.fg
+    ['--bg-base' as string]: light.bg,
+    ['--bg-tint' as string]: lighten(light.bg, 0.35),
+    ['--fg-strong' as string]: light.fg,
+    ['--fg-soft' as string]: withAlpha(light.fg, 0.7)
   }
+}
+
+/** 把 hex 转 rgba 并提亮；失败回退原值 */
+function lighten(hex: string, amount: number): string {
+  const rgb = parseHex(hex)
+  if (!rgb) return hex
+  const r = Math.round(rgb.r + (255 - rgb.r) * amount)
+  const g = Math.round(rgb.g + (255 - rgb.g) * amount)
+  const b = Math.round(rgb.b + (255 - rgb.b) * amount)
+  return `rgb(${r}, ${g}, ${b})`
+}
+
+function withAlpha(hex: string, alpha: number): string {
+  const rgb = parseHex(hex)
+  if (!rgb) return hex
+  return `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${alpha})`
+}
+
+function parseHex(hex: string): { r: number; g: number; b: number } | null {
+  const m = /^#?([0-9a-f]{6})$/i.exec(hex.trim())
+  if (!m) return null
+  const n = parseInt(m[1], 16)
+  return { r: (n >> 16) & 255, g: (n >> 8) & 255, b: n & 255 }
 }
 
 function onSelect(cat: Category) {
@@ -127,166 +113,80 @@ function onSelect(cat: Category) {
   }
 }
 
-/* S34: 大卡片 — border-radius 16px、阴影静态/hover、min-height 132px */
+/* S34-followup: 极简大卡片 — 渐变背景 + 名称 + 计数，无图标/无副标题 */
 .usage-card {
-  --tile-bg: #f5f5f5;
-  --tile-fg: #595959;
+  --bg-base: #f5f5f5;
+  --bg-tint: #fafafa;
+  --fg-strong: #262626;
+  --fg-soft: #8c8c8c;
   position: relative;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
-  gap: 14px;
-  padding: 20px;
-  min-height: 132px;
-  background: var(--bg-secondary, #ffffff);
-  border: 1px solid var(--border-color, #e5e7eb);
-  border-radius: 16px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 2px 6px rgba(0, 0, 0, 0.03);
+  justify-content: space-between;
+  padding: 28px 24px;
+  min-height: 168px;
+  border-radius: 20px;
+  background:
+    radial-gradient(120% 100% at 100% 0%, var(--bg-tint) 0%, transparent 60%),
+    linear-gradient(180deg, var(--bg-base) 0%, var(--bg-tint) 100%);
   cursor: default;
   outline: none;
   animation: usage-card-in 360ms cubic-bezier(0.16, 1, 0.3, 1) both;
   animation-delay: calc(var(--i, 0) * 40ms);
   transition:
-    transform 200ms cubic-bezier(0.16, 1, 0.3, 1),
-    box-shadow 200ms ease-out,
-    border-color 200ms ease-out,
-    background 200ms ease-out;
+    transform 240ms cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 240ms ease-out;
 }
 
 .usage-card--clickable {
   cursor: pointer;
   &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 24px -6px rgba(0, 0, 0, 0.10);
-    border-color: var(--primary, #6366f1);
+    transform: translateY(-3px);
+    box-shadow: 0 12px 28px -10px var(--fg-soft);
   }
   &:active {
-    transform: translateY(0) scale(0.98);
+    transform: translateY(-1px) scale(0.99);
     transition-duration: 120ms;
   }
   &:focus-visible {
-    outline: 2px solid var(--primary, #6366f1);
+    outline: 2px solid var(--fg-strong);
     outline-offset: 3px;
   }
 }
 
-/* S34: icon-tile — 48×48、12 圆角；颜色由每张卡的 inline style 注入 */
-.usage-card__tile {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
-  background: var(--tile-bg);
-  color: var(--tile-fg);
-  flex-shrink: 0;
-
-  @media (max-width: 480px) {
-    width: 44px;
-    height: 44px;
-  }
-}
-
-.usage-card__icon {
-  font-size: 22px;
-  line-height: 1;
-  :deep(svg) {
-    width: 1em;
-    height: 1em;
-    fill: currentColor;
-  }
-}
-
-.usage-card__body {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  flex: 1;
-  min-width: 0;
-}
-
-.usage-card__head {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.usage-card__title {
+.usage-card__name {
   margin: 0;
-  font-size: clamp(15px, 1.4vw, 17px);
+  font-size: clamp(20px, 1.8vw, 24px);
   font-weight: 700;
-  color: var(--text-primary, #111827);
-  line-height: 1.3;
+  color: var(--fg-strong);
   letter-spacing: -0.01em;
+  line-height: 1.25;
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.usage-card__code {
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 11px;
-  color: var(--text-tertiary, #9ca3af);
-  background: transparent;
-  padding: 0;
-  flex-shrink: 0;
-}
-
-.usage-card__desc {
-  margin: 0;
-  font-size: 13px;
-  font-weight: 400;
-  color: var(--text-secondary, #6b7280);
-  line-height: 1.5;
   display: -webkit-box;
-  -webkit-line-clamp: 1;
+  -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
-  overflow: hidden;
-
-  &--muted {
-    color: var(--text-tertiary, #9ca3af);
-    font-style: normal;
-  }
-}
-
-.usage-card__foot {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  margin-top: auto;
-  padding-top: 4px;
 }
 
 .usage-card__count {
-  display: inline-flex;
+  display: flex;
   align-items: baseline;
-  gap: 4px;
+  gap: 6px;
+  margin-top: 16px;
 
   &-num {
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--text-primary, #111827);
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--fg-strong);
     font-variant-numeric: tabular-nums;
+    line-height: 1;
   }
   &-unit {
-    font-size: 12px;
-    color: var(--text-tertiary, #9ca3af);
+    font-size: 13px;
+    color: var(--fg-soft);
+    font-weight: 500;
   }
-}
-
-.usage-card__arrow {
-  font-size: 18px;
-  line-height: 1;
-  color: var(--text-tertiary, #9ca3af);
-  font-weight: 400;
-  transition: transform 200ms ease-out, color 200ms ease-out;
-}
-
-.usage-card--clickable:hover .usage-card__arrow {
-  transform: translateX(3px);
-  color: var(--primary, #6366f1);
 }
 
 @keyframes usage-card-in {
@@ -308,15 +208,14 @@ function onSelect(cat: Category) {
       transform: none;
     }
   }
-  .usage-card--clickable:hover .usage-card__arrow {
-    transform: none;
-  }
 }
 
+/* 暗色态：加深底色 + 鲜亮 fg；保持相同渐变结构 */
 @media (prefers-color-scheme: dark) {
   .usage-card:not([data-theme='light']) {
-    background: #1c1c1f;
-    border-color: rgba(255, 255, 255, 0.08);
+    --bg-base: rgba(255, 255, 255, 0.04);
+    --bg-tint: rgba(255, 255, 255, 0.08);
+    color: var(--fg-strong);
   }
 }
 </style>
