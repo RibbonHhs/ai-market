@@ -1,16 +1,21 @@
 <template>
-  <section class="home-stats">
+  <section class="home-stats" data-testid="home-stats">
     <div class="home-stats__inner">
-      <!-- 左侧 banner -->
+      <!-- 左侧 banner：第一次使用 Skill? → 新手指引（S36 更新文案 + 跳转目标） -->
       <div class="home-stats__cta">
         <div class="home-stats__cta-icon" aria-hidden="true">M</div>
         <div class="home-stats__cta-body">
           <h3 class="home-stats__cta-title">第一次使用 Skill?</h3>
           <p class="home-stats__cta-desc">
-            通过 SkillsMap 安装使用更方便、快捷，3 分钟帮你了解 Skill 安装与使用技巧
+            不知道从哪开始？3 分钟带你了解 Skills 是什么、怎么安装、怎么用 API 接入。
           </p>
         </div>
-        <button type="button" class="home-stats__cta-btn" @click="onStart">
+        <button
+          type="button"
+          class="home-stats__cta-btn"
+          data-testid="home-stats-cta"
+          @click="onStart"
+        >
           开始新手指引 →
         </button>
       </div>
@@ -52,7 +57,8 @@ const router = useRouter()
 const formattedTotal = computed(() => props.totalSkills.toLocaleString('en-US'))
 
 function onStart() {
-  router.push({ name: 'browse', query: { sort: 'featured' } })
+  // S36: 跳转目标从 /browse 改为 /newbie-guide（HomeStats 旧 CTA 改承担新手指引入口）
+  router.push({ name: 'newbie-guide' })
 }
 </script>
 

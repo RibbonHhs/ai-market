@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Sprint H5: 生产日志落盘 + 按日切割。
+  - LOG_PATH 默认为 ./logs（dev/local 走 IDE 即可落盘到项目根 logs/）
+  - 容器内注入 LOG_PATH=/app/logs（与 Dockerfile VOLUME 一致）
+  - 滚动策略：SizeAndTimeBasedRollingPolicy，50MB × 30 天 × 5GB 上限
+  - CONSOLE + FILE 双 appender，Docker logs / 持久卷双向可采集
+-->
+<configuration>
+  <property name="LOG_PATH" value="${LOG_PATH:-./logs}"/>
+  <property name="APP_NAME" value="skills-map-backend"/>
+
+  <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+    </encoder>
+  </appender>
+
+  <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <file>${LOG_PATH}/${APP_NAME}.log</file>
+    <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+      <fileNamePattern>${LOG_PATH}/${APP_NAME}.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+      <maxFileSize>50MB</maxFileSize>
+      <maxHistory>30</maxHistory>
+      <totalSizeCap>5GB</totalSizeCap>
+    </rollingPolicy>
+    <encoder>
+      <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+    </encoder>
+  </appender>
+
+  <root level="INFO">
+    <appender-ref ref="CONSOLE"/>
+    <appender-ref ref="FILE"/>
+  </root>
+  <logger name="com.meiya.skillsmap" level="INFO"/>
+</configuration>

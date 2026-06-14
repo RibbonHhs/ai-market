@@ -6,6 +6,7 @@ import com.meiya.skillsmap.common.BizCode;
 import com.meiya.skillsmap.common.BizException;
 import com.meiya.skillsmap.common.Result;
 import com.meiya.skillsmap.entity.User;
+import com.meiya.skillsmap.response.UserResponse;
 import com.meiya.skillsmap.security.AuthContext;
 import com.meiya.skillsmap.security.JwtUtil;
 import com.meiya.skillsmap.service.UserService;
@@ -59,7 +60,7 @@ public class AuthController {
 
     @Operation(summary = "注册")
     @PostMapping("/register")
-    public Result<User> register(@RequestBody RegisterRequest req) {
+    public Result<UserResponse> register(@RequestBody RegisterRequest req) {
         if (StrUtil.isBlank(req.getUsername()) || StrUtil.isBlank(req.getPassword())) {
             throw new BizException(BizCode.BAD_REQUEST, "用户名/密码必填");
         }
@@ -86,12 +87,12 @@ public class AuthController {
         user.setCreateTime(LocalDateTime.now());
         user.setUpdateTime(LocalDateTime.now());
         userService.save(user);
-        return Result.ok(user);
+        return Result.ok(UserResponse.from(user));
     }
 
     @Operation(summary = "当前用户")
     @GetMapping("/me")
-    public Result<User> me() {
+    public Result<UserResponse> me() {
         AuthContext.UserPrincipal p = AuthContext.get();
         if (p == null) {
             throw new BizException(BizCode.UNAUTHORIZED);
@@ -100,7 +101,7 @@ public class AuthController {
         if (user == null) {
             throw new BizException(BizCode.USER_NOT_FOUND);
         }
-        return Result.ok(user);
+        return Result.ok(UserResponse.from(user));
     }
 
     @Operation(summary = "登出（前端清缓存即可）")

@@ -14,7 +14,7 @@
           type="button"
           class="home-featured__cat"
           :class="{ 'is-active': activeCat === null }"
-          @click="activeCat = null"
+          @click="onSelectCat(null)"
         >
           精选 Top {{ totalCount }}
         </button>
@@ -31,8 +31,12 @@
       </aside>
 
       <!-- 右侧排行表 -->
-      <div class="home-featured__table">
-        <a-empty v-if="!filtered.length" description="该分类下暂无精选" />
+      <div
+        class="home-featured__table"
+        :class="{ 'is-center': loading || !filtered.length }"
+      >
+        <a-spin v-if="loading" tip="加载中…" />
+        <a-empty v-else-if="!filtered.length" description="该分类下暂无精选" />
         <ol v-else class="home-featured__list">
           <li
             v-for="(s, i) in filtered"
@@ -67,9 +71,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import SkillLogo from '../SkillLogo.vue'
+import { skillApi } from '@/api/skill'
 import type { Skill, Category } from '@/types/skill'
 
 interface Props {
@@ -80,18 +85,47 @@ interface Props {
 const props = defineProps<Props>()
 const router = useRouter()
 const activeCat = ref<number | null>(null)
+// 当前展示的列表：默认走 props.featured，切到某个职业分类时拉后端覆盖
+const currentList = ref<Skill[]>(props.featured)
+const loading = ref(false)
 
 const visibleSoc = computed(() =>
   (props.socCategories || []).slice(0, 8)
 )
 
-const filtered = computed(() => props.featured)
+const filtered = computed(() => currentList.value)
 
-function onSelectCat(id: number) {
+async function onSelectCat(id: number | null) {
+  if (activeCat.value === id) return
   activeCat.value = id
-  // 当前 featured 不分分类，切换仅 UI 切换（fallback 用同样的列表）
-  // 真实分类榜数据留 v1.1
+  if (id === null) {
+    currentList.value = props.featured
+    return
+  }
+  loading.value = true
+  try {
+    // SOC 一级 categoryId 后端会自动展开到子分类
+    const page = await skillApi.list({
+      categoryId: id,
+      sort: 'installs',
+      size: 20
+    } as any)
+    currentList.value = page.records || []
+  } catch (e) {
+    console.error('[HomeFeatured] load by category failed', e)
+    currentList.value = []
+  } finally {
+    loading.value = false
+  }
 }
+
+// props.featured 异步到达或外部刷新时，若当前未选中分类则同步到 currentList
+watch(
+  () => props.featured,
+  (v) => {
+    if (activeCat.value === null) currentList.value = v
+  }
+)
 
 function goDetail(s: Skill) {
   if (!s.slug) return
@@ -169,6 +203,28 @@ function formatNum(n: number) {
       background: var(--bg-primary);
       color: var(--text-primary);
       font-weight: 700;
+    }
+  }
+  &__table {
+    min-height: 360px;
+    max-height: 480px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+    &::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 3px;
+    }
+    &::-webkit-scrollbar-thumb:hover {
+      background: var(--text-tertiary);
+    }
+    &.is-center {
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
   }
   &__list {

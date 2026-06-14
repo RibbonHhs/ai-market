@@ -16,7 +16,6 @@
           <a-menu-item key="browse">浏览</a-menu-item>
           <a-menu-item key="occupations">职业技能</a-menu-item>
           <a-menu-item key="categories">用途分类</a-menu-item>
-          <a-menu-item key="api-guide">API 接入</a-menu-item>
         </a-menu>
       </div>
 
@@ -94,7 +93,6 @@
       <a-menu-item key="browse">浏览</a-menu-item>
       <a-menu-item key="occupations">职业技能</a-menu-item>
       <a-menu-item key="categories">用途分类</a-menu-item>
-      <a-menu-item key="api-guide">API 接入</a-menu-item>
     </a-menu>
   </a-drawer>
 </template>
@@ -252,7 +250,7 @@ function goMe() {
     padding: 0 11px;
   }
   :deep(.ant-input) {
-    height: 30px;
+    height: 32px;
   }
   :deep(.ant-input-search-button) {
     height: 32px;

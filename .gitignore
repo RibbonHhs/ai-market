@@ -38,6 +38,10 @@ desktop.ini
 .env
 .env.local
 .env.*.local
+# 生产密钥（必须 gitignore，权限 600，由 scripts/gen-secrets.sh 生成）
+.env.prod
+# MySQL 备份目录
+backups/
 
 # Logs
 logs/

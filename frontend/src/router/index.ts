@@ -50,6 +50,12 @@ const routes: RouteRecordRaw[] = [
     meta: { title: 'API 接入' }
   },
   {
+    path: '/newbie-guide',
+    name: 'newbie-guide',
+    component: () => import('@/views/NewbieGuideView.vue'),
+    meta: { title: '新手指引' }
+  },
+  {
     path: '/login',
     name: 'login',
     component: () => import('@/views/LoginView.vue'),

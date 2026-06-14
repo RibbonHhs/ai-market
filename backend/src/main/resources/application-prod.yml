@@ -1,0 +1,78 @@
+# Prod profile: MySQL + Druid + 文件日志 + Actuator 暴露 health
+# 配套 Dockerfile 切到 SPRING_PROFILES_ACTIVE=prod 激活本文件
+# 注意：本文件不提供密钥默认值；DB_USER / DB_PASSWORD / JASYPT_PASSWORD / JWT_SECRET 必须由 ENV 注入，
+#       缺失时 Spring 启动失败（fail-fast），不会以"弱密钥"静默上线。
+spring:
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    # rewriteBatchedStatements / useServerPrepStmts / cachePrepStmts 提升批处理与预编译性能
+    url: jdbc:mysql://${DB_HOST:127.0.0.1}:${DB_PORT:3306}/${DB_NAME:skillsmap}?useUnicode=true&characterEncoding=UTF-8&useSSL=true&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=false&rewriteBatchedStatements=true&useServerPrepStmts=true&cachePrepStmts=true
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}     # 生产严禁给默认值，缺失即失败
+    druid:
+      initial-size: 10
+      min-idle: 10
+      max-active: 50
+      max-wait: 30000
+      validation-query: SELECT 1
+      test-while-idle: true
+      test-on-borrow: false
+      test-on-return: false
+      filters: stat,wall
+      # StatViewServlet 在生产关闭（用监控侧抓 /druid 不可达）
+      stat-view-servlet:
+        enabled: false
+
+  # 生产关闭 H2 控制台 / SQL init（避免误连 dev 行为）
+  h2:
+    console:
+      enabled: false
+  sql:
+    init:
+      mode: never
+
+# 生产关闭 Knife4j / springdoc（配合 nginx /doc.html 404 双重防护）
+springdoc:
+  api-docs:
+    enabled: false
+  swagger-ui:
+    enabled: false
+knife4j:
+  enable: false
+
+# Actuator: 仅暴露健康 + 基础 info；show-details: never 避免泄露内部组件细节
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: never
+      probes:
+        enabled: true   # 同时暴露 /actuator/health/liveness + /readiness（K8s probes）
+  info:
+    env:
+      enabled: false
+  health:
+    db:
+      enabled: true
+    diskspace:
+      enabled: true
+
+# 项目自定义（覆盖 application.yml 中的默认）
+skillsmap:
+  # 生产默认开启限流（容量/速率可通过 ENV 微调）
+  rate-limit:
+    enabled: ${SKILLSMAP_RATE_LIMIT_ENABLED:true}
+    capacity: ${SKILLSMAP_RATE_LIMIT_CAPACITY:120}
+    refill-tokens: ${SKILLSMAP_RATE_LIMIT_REFILL_TOKENS:120}
+    refill-period: ${SKILLSMAP_RATE_LIMIT_REFILL_PERIOD:1m}
+  # 生产默认关闭 seed（避免重启时反复扫描本地路径）
+  seed:
+    enabled: ${SKILLSMAP_SEED_ENABLED:false}
+  # 生产关闭 Git 源（除非明确走远端仓同步；保留 ENV 可覆盖）
+  storage:
+    git:
+      enabled: ${SKILLSMAP_GIT_ENABLED:false}

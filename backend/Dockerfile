@@ -11,7 +11,8 @@ COPY src ./src
 RUN mvn -B clean package -DskipTests
 
 # ============ 运行时阶段 ============
-FROM eclipse-temurin:21-jre
+# Sprint H4: 固定 patch 版本（避免浮动到 broken 版本拖死 prod）
+FROM eclipse-temurin:21.0.2_13-jre-jammy
 WORKDIR /app
 
 # Sprint S02: 预装 git（诊断 / 手动运维用；运行时由 JGit 处理 SSH 之外的常见协议）
@@ -28,14 +29,19 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 COPY --from=builder /build/target/skills-map-backend.jar /app/app.jar
 
 # Sprint S02: 显式创建 skill-clones 目录（Git 源缓存），持久化卷挂载点
-RUN mkdir -p /app/data/skill-clones /app/data/skill-packages
-VOLUME ["/app/data"]
+# Sprint H4: 创建非 root 用户 + 切主（满足 CIS-Docker 4.1）
+# Sprint H5: 预创建 /app/logs（logback-spring.xml 落盘点）
+RUN groupadd -r app && useradd -r -g app -d /app -s /sbin/nologin app \
+    && mkdir -p /app/logs /app/data/skill-clones /app/data/skill-packages \
+    && chown -R app:app /app
+USER app
+VOLUME ["/app/data", "/app/logs"]
 
 EXPOSE 8767
 HEALTHCHECK --interval=30s --timeout=5s --retries=3 \
   CMD curl -f http://localhost:8767/actuator/health || exit 1
 
 ENV JAVA_OPTS="-Xms256m -Xmx512m -Djava.security.egd=file:/dev/./urandom"
-ENV SPRING_PROFILES_ACTIVE=local
+ENV SPRING_PROFILES_ACTIVE=prod
 
 ENTRYPOINT ["sh", "-c", "exec java $JAVA_OPTS -jar /app/app.jar"]

@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -18,7 +19,13 @@ public class User implements Serializable {
     @TableField("username")
     private String username;
 
+    /**
+     * S39 安全修复: 字段级防御 — password 不参与 JSON 序列化输出，
+     * 反序列化（写入）仍允许，便于 Service 内部用 entity 装载数据。
+     * 业务返回走 {@link com.meiya.skillsmap.response.UserResponse}（DTO）更可控。
+     */
     @TableField("password")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
     @TableField("email")

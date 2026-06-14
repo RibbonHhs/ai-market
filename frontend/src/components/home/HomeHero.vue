@@ -278,15 +278,10 @@ watch(activeTab, (val, oldVal) => {
     z-index: -1;
     background: linear-gradient(180deg, #f3f0ff 0%, #eef2ff 60%, transparent 100%);
     pointer-events: none;
-  }
-  // 暗色态：用 token 替换浅紫渐变
-  @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) .home-hero__backdrop {
+    // 暗色态：嵌套在 &__backdrop 内，避免 Vue scoped CSS 把 .home-hero 插到 selector 前面破坏 :root
+    @media (prefers-color-scheme: dark) {
       background: linear-gradient(180deg, var(--bg-primary) 0%, var(--bg-secondary) 60%, transparent 100%);
     }
-  }
-  :root[data-theme="dark"] .home-hero__backdrop {
-    background: linear-gradient(180deg, var(--bg-primary) 0%, var(--bg-secondary) 60%, transparent 100%);
   }
   &__inner {
     max-width: 880px;
@@ -488,16 +483,11 @@ watch(activeTab, (val, oldVal) => {
     border: 1px solid #f1e8ff;
     border-radius: 14px;
     padding: 22px 24px;
-  }
-  @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) .home-hero__agent {
+    // 暗色态：嵌套避免 Vue scoped CSS 破坏 selector
+    @media (prefers-color-scheme: dark) {
       background: var(--bg-secondary);
       border-color: var(--border);
     }
-  }
-  :root[data-theme="dark"] .home-hero__agent {
-    background: var(--bg-secondary);
-    border-color: var(--border);
   }
   &__agent-intro {
     margin-bottom: 18px;
@@ -542,17 +532,11 @@ watch(activeTab, (val, oldVal) => {
     font-weight: 700;
     font-size: 13px;
     flex-shrink: 0;
-  }
-  // 暗色态：紫底深字（--primary + --text-inverse）— 修反向 token
-  @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) .home-hero__agent-num {
+    // 暗色态：紫底深字（--primary + --text-inverse）— 嵌套避免 Vue scoped 破坏
+    @media (prefers-color-scheme: dark) {
       background: var(--primary);
       color: var(--text-inverse);
     }
-  }
-  :root[data-theme="dark"] .home-hero__agent-num {
-    background: var(--primary);
-    color: var(--text-inverse);
   }
   &__agent-body {
     flex: 1;

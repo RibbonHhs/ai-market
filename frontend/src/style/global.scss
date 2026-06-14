@@ -46,6 +46,7 @@
   --chip-purpose-life-bg: #FFF1F0;       --chip-purpose-life-fg: #820014;
   --chip-purpose-db-bg: #F4FFB8;         --chip-purpose-db-fg: #874D00;
   --chip-purpose-blockchain-bg: #FFE7BA; --chip-purpose-blockchain-fg: #874D00;
+  --chip-occupation-bg: #E6F4FF;          --chip-occupation-fg: #0958D9;
 }
 
 // ===== 暗色（跟随系统） =====
@@ -133,6 +134,20 @@
   --chip-purpose-life-bg: rgba(251,146,60,0.16);       --chip-purpose-life-fg: #fdba74;
   --chip-purpose-db-bg: rgba(148,163,184,0.16);        --chip-purpose-db-fg: #cbd5e1;
   --chip-purpose-blockchain-bg: rgba(217,119,6,0.16);  --chip-purpose-blockchain-fg: #fbbf24;
+  --chip-occupation-bg: rgba(22,119,255,0.16);          --chip-occupation-fg: #85C5FF;
+}
+
+// ===== data-theme="dark" 显式钩子（用全局而非组件 scoped，因 :root 不会被 scoped 正确重写） =====
+:root[data-theme="dark"] .home-hero__backdrop {
+  background: linear-gradient(180deg, var(--bg-primary) 0%, var(--bg-secondary) 60%, transparent 100%);
+}
+:root[data-theme="dark"] .home-hero__agent {
+  background: var(--bg-secondary);
+  border-color: var(--border);
+}
+:root[data-theme="dark"] .home-hero__agent-num {
+  background: var(--primary);
+  color: var(--text-inverse);
 }
 
 // ===== 浅色（data-theme="light" 显式） =====
@@ -182,6 +197,7 @@
 .usage-chip--code-purpose-life       { background: var(--chip-purpose-life-bg);       color: var(--chip-purpose-life-fg); }
 .usage-chip--code-purpose-db         { background: var(--chip-purpose-db-bg);         color: var(--chip-purpose-db-fg); }
 .usage-chip--code-purpose-blockchain { background: var(--chip-purpose-blockchain-bg); color: var(--chip-purpose-blockchain-fg); }
+.usage-chip--code-occupation         { background: var(--chip-occupation-bg); color: var(--chip-occupation-fg); }
 .usage-chip--code-default            { background: var(--chip-default-bg);            color: var(--chip-default-fg); }
 
 // ===== 基线 =====

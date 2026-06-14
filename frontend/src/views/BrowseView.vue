@@ -58,38 +58,6 @@
 
         <!-- 主列表 -->
         <main class="browse__main">
-          <!-- S24: 顶部 USAGE 横向 chip 筛选条（一级 USAGE） -->
-          <div class="browse__usage-filter" role="toolbar" aria-label="按用途筛选" data-testid="usage-filter">
-            <span class="usage-filter__label">用途：</span>
-            <div class="usage-filter__chips">
-              <button
-                class="usage-chip"
-                :class="{ 'usage-chip--active': activeUsageTop === null }"
-                @click="onUsageTopClick(null)"
-                aria-label="清除用途筛选"
-                data-testid="usage-filter-all"
-              >
-                <span class="usage-chip__emoji">📦</span>
-                <span>全部</span>
-              </button>
-              <button
-                v-for="c in usageTopList"
-                :key="c.code"
-                class="usage-chip"
-                :class="[
-                  `usage-chip--code-${c.code.toLowerCase()}`,
-                  { 'usage-chip--active': activeUsageTop === c.id }
-                ]"
-                @click="onUsageTopClick(c.id)"
-                :aria-label="`筛选：${c.name}`"
-                :data-testid="`usage-filter-${c.code.toLowerCase()}`"
-              >
-                <span class="usage-chip__emoji">{{ c.emoji }}</span>
-                <span>{{ c.name }}</span>
-              </button>
-            </div>
-          </div>
-
           <div class="browse__head">
             <a-input-search
               v-model:value="query.keyword"
@@ -138,7 +106,6 @@ import AppHeader from '@/components/AppHeader.vue'
 import SkillCard from '@/components/SkillCard.vue'
 import { skillApi, categoryApi, type SkillQuery } from '@/api/skill'
 import type { Skill, Category } from '@/types/skill'
-import { USAGE_TOP_ORDER, USAGE_COLORS, getUsageColor } from '@/constants/usage-colors'
 
 const route = useRoute()
 const router = useRouter()
@@ -250,42 +217,6 @@ const query = reactive<SkillQuery>({
   size: 20
 })
 
-/** S24: 顶部 chip 选中态（null = 全部）；按下后写入 query.usageCategoryId 并 reload */
-const activeUsageTop = ref<number | null>(null)
-
-/** S24 + S25: 12 个一级 USAGE 列表（按 USAGE_TOP_ORDER 顺序；CSS 变量驱动主题） */
-const usageTopList = computed(() => {
-  return USAGE_TOP_ORDER
-    .map(code => {
-      const c = USAGE_COLORS[code]
-      if (!c) return null
-      const cat = categories.value.find(
-        (cc) => (cc as Category & { type?: string }).type === 'USAGE' && cc.code === code && cc.parentId == null
-      )
-      if (!cat) return null
-      // S25: 不再返回 bg/fg（CSS 变量驱动）
-      return { id: cat.id, code, name: c.name, emoji: c.emoji }
-    })
-    .filter((x): x is NonNullable<typeof x> => x !== null)
-})
-
-/** S24: 点击顶部 chip（再次点同色 = 取消） */
-function onUsageTopClick(id: number | null) {
-  if (id === null) {
-    activeUsageTop.value = null
-    query.usageCategoryId = undefined
-  } else if (activeUsageTop.value === id) {
-    activeUsageTop.value = null
-    query.usageCategoryId = undefined
-  } else {
-    activeUsageTop.value = id
-    query.usageCategoryId = id
-  }
-  // 顶部 chip 流是粗筛；左 sidebar 树不联动（避免冲突）
-  query.page = 1
-  reload()
-}
-
 async function loadCategories() {
   categories.value = await categoryApi.list()
 }
@@ -367,15 +298,11 @@ async function applySlugFilter(slug: string, typeHint?: string) {
     activeCategoryId.value = c.id
     query.usageCategoryId = c.id
     query.categoryId = undefined
-    // 顶部 chip 联动：反查一级 USAGE，让对应 chip 高亮
-    const parentId = c.parentId ?? c.id
-    activeUsageTop.value = parentId
   } else {
     dim.value = 'soc'
     activeCategoryId.value = c.id
     query.categoryId = c.id
     query.usageCategoryId = undefined
-    activeUsageTop.value = null
   }
   query.page = 1
   return true
@@ -549,83 +476,6 @@ watch(
   border: 1px solid var(--border-color);
   .browse__search {
     flex: 1;
-  }
-}
-/* S24: 顶部 USAGE chip 流 */
-.browse__usage-filter {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background: var(--bg-secondary);
-  padding: 10px 12px;
-  border-radius: 10px;
-  margin-bottom: 12px;
-  overflow-x: auto;
-  scrollbar-width: thin;
-  touch-action: manipulation; /* 减 300ms tap delay */
-  border: 1px solid var(--border-color);
-}
-.usage-filter__label {
-  font-size: 13px;
-  color: var(--text-secondary);
-  font-weight: 500;
-  flex-shrink: 0;
-}
-.usage-filter__chips {
-  display: flex;
-  gap: 6px;
-  flex-wrap: nowrap;
-  align-items: center;
-  flex: 1;
-  min-width: 0;
-}
-.usage-filter__chips .usage-chip {
-  flex-shrink: 0;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  height: 28px;
-  padding: 0 12px;
-  border-radius: 14px;
-  font-size: 13px;
-  font-weight: 500;
-  border: 1px solid transparent;
-  background: #f5f5f5;
-  color: #595959;
-  transition: all 150ms ease-out;
-  white-space: nowrap;
-  user-select: none;
-  -webkit-tap-highlight-color: transparent;
-  min-width: 44px; /* 触控最小尺寸 */
-}
-.usage-filter__chips .usage-chip:hover {
-  transform: scale(1.02);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-}
-.usage-filter__chips .usage-chip:focus-visible {
-  outline: 2px solid #1677ff;
-  outline-offset: 2px;
-}
-.usage-filter__chips .usage-chip--active {
-  font-weight: 600;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
-}
-.usage-chip__emoji {
-  font-size: 14px;
-  line-height: 1;
-}
-@media (max-width: 768px) {
-  .browse__usage-filter {
-    padding: 8px 10px;
-  }
-  .usage-filter__label {
-    display: none;
-  }
-  .usage-filter__chips .usage-chip {
-    font-size: 12px;
-    height: 32px;
-    padding: 0 10px;
   }
 }
 .browse__pager {

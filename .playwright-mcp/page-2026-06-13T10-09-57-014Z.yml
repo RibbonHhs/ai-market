@@ -1,0 +1,88 @@
+- generic [ref=e3]:
+  - generic [ref=e5]:
+    - generic [ref=e6]:
+      - link "S SkillsMap" [ref=e7] [cursor=pointer]:
+        - /url: /
+        - generic [ref=e8]: S
+        - generic [ref=e9]: SkillsMap
+      - menu [ref=e10]:
+        - menuitem "首页" [ref=e11] [cursor=pointer]:
+          - generic [ref=e12]: 首页
+        - menuitem "浏览" [ref=e13] [cursor=pointer]:
+          - generic [ref=e14]: 浏览
+        - menuitem "职业技能" [ref=e15] [cursor=pointer]:
+          - generic [ref=e16]: 职业技能
+        - menuitem "用途分类" [ref=e17] [cursor=pointer]:
+          - generic [ref=e18]: 用途分类
+        - menuitem "API 接入" [ref=e19] [cursor=pointer]:
+          - generic [ref=e20]: API 接入
+        - generic:
+          - generic:
+            - img:
+              - img
+    - generic [ref=e23]:
+      - textbox "搜索 Skills..." [ref=e24]
+      - button "search" [ref=e26] [cursor=pointer]:
+        - img "search" [ref=e27]:
+          - img [ref=e28]
+    - generic [ref=e30]:
+      - 'button "当前主题: 暗色，点击切换为跟随系统" [ref=e31] [cursor=pointer]':
+        - generic [ref=e32]: 🌙
+      - button "登 录" [ref=e33] [cursor=pointer]:
+        - generic [ref=e34]: 登 录
+      - button "注 册" [ref=e35] [cursor=pointer]:
+        - generic [ref=e36]: 注 册
+  - main [ref=e37]:
+    - generic [ref=e38]:
+      - complementary [ref=e39]:
+        - generic [ref=e40]:
+          - heading "分类维度" [level=4] [ref=e41]
+          - generic [ref=e42]:
+            - generic [ref=e43] [cursor=pointer]:
+              - generic [ref=e44]:
+                - radio "按职业" [checked]
+              - generic [ref=e45]: 按职业
+            - generic [ref=e46] [cursor=pointer]:
+              - generic [ref=e47]:
+                - radio "按用途"
+              - generic [ref=e48]: 按用途
+        - generic [ref=e49]:
+          - heading "分类" [level=4] [ref=e50]
+          - generic [ref=e51] [cursor=pointer]: 📦 全部
+        - generic [ref=e52]:
+          - heading "来源" [level=4] [ref=e53]
+          - generic [ref=e54]:
+            - generic [ref=e55] [cursor=pointer]:
+              - generic [ref=e56]:
+                - radio "全部" [checked]
+              - generic [ref=e57]: 全部
+            - generic [ref=e58] [cursor=pointer]:
+              - generic [ref=e59]:
+                - radio "官方"
+              - generic [ref=e60]: 官方
+            - generic [ref=e61] [cursor=pointer]:
+              - generic [ref=e62]:
+                - radio "社区"
+              - generic [ref=e63]: 社区
+      - main [ref=e64]:
+        - toolbar "按用途筛选" [ref=e65]:
+          - generic [ref=e66]: 用途：
+          - button "清除用途筛选" [ref=e68] [cursor=pointer]:
+            - generic [ref=e69]: 📦
+            - generic [ref=e70]: 全部
+        - generic [ref=e71]:
+          - generic [ref=e73]:
+            - textbox "搜索 Skills..." [ref=e74]
+            - button "search" [ref=e76] [cursor=pointer]:
+              - img "search" [ref=e77]:
+                - img [ref=e78]
+          - generic [ref=e80] [cursor=pointer]:
+            - generic [ref=e81]:
+              - combobox [ref=e83]
+              - generic [ref=e84]: 最新发布
+            - generic:
+              - img:
+                - img
+        - generic [ref=e85]:
+          - img [ref=e87]
+          - paragraph [ref=e99]: 没有匹配的 Skill
