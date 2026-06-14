@@ -45,6 +45,7 @@ CREATE TABLE IF NOT EXISTS skill (
     status VARCHAR(32) DEFAULT 'published',
     featured BOOLEAN DEFAULT FALSE,
     created_by_user_id BIGINT,
+    uploader_user_id BIGINT,  -- S38: 用户上传端点写入
     create_time TIMESTAMP,
     update_time TIMESTAMP,
     deleted INT DEFAULT 0
@@ -114,6 +115,8 @@ CREATE INDEX IF NOT EXISTS idx_skill_usage_category ON skill(usage_category_id);
 CREATE INDEX IF NOT EXISTS idx_user_username ON user(username);
 CREATE INDEX IF NOT EXISTS idx_review_skill ON review(skill_id);
 CREATE INDEX IF NOT EXISTS idx_favorite_user ON favorite(user_id);
+-- S38: 用户上传端点 — uploader_user_id 索引
+CREATE INDEX IF NOT EXISTS idx_uploader_user_id ON skill(uploader_user_id);
 
 -- ========== S04: SOC 职业分类扩展 ==========
 ALTER TABLE category ADD COLUMN IF NOT EXISTS type      VARCHAR(16);

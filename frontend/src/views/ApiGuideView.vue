@@ -382,13 +382,6 @@ async function copy(text: string) {
     font-size: 32px;
     font-weight: 800;
   }
-  &__sub {
-    margin: 0 auto 8px;
-    max-width: 720px;
-    color: var(--text-secondary);
-    font-size: 15px;
-    line-height: 1.7;
-  }
   &__meta {
     margin: 0;
     font-size: 13px;

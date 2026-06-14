@@ -60,7 +60,7 @@
             :ok-button-props="{ loading: bulkAction === 'unpublish' }"
             @confirm="confirmBulkPublish(false)"
           >
-            <a-button size="small" type="link" style="color: #fa8c16">批量下架</a-button>
+            <a-button size="small" type="link" style="color: var(--warning)">批量下架</a-button>
           </a-popconfirm>
           <a-popconfirm
             v-if="hasGitUrlSelected"
@@ -68,7 +68,7 @@
             :ok-button-props="{ loading: bulkAction === 'sync' }"
             @confirm="confirmBulkSync"
           >
-            <a-button size="small" type="link" style="color: #1677ff">
+            <a-button size="small" type="link" style="color: var(--link)">
               <SyncOutlined /> 批量同步 ({{ gitUrlSelectedCount }})
             </a-button>
           </a-popconfirm>
@@ -102,7 +102,7 @@
           </template>
           <template v-else-if="column.key === 'name'">
             <strong>{{ record.displayName || record.name }}</strong>
-            <div style="color: #999; font-size: 12px">{{ record.name }}</div>
+            <div style="color: var(--text-tertiary); font-size: 12px">{{ record.name }}</div>
           </template>
           <template v-else-if="column.key === 'source'">
             <a-tooltip v-if="record.sourceType === 'GIT_URL'" :title="record.sourceUrl">
@@ -110,26 +110,26 @@
             </a-tooltip>
             <a-tag v-else-if="record.sourceType === 'LOCAL_FILE'" color="default">📄 .md</a-tag>
             <a-tag v-else-if="record.sourceType === 'LOCAL_ZIP'" color="default">📦 本地</a-tag>
-            <span v-else style="color: #bbb; font-size: 12px">—</span>
+            <span v-else style="color: var(--text-tertiary); font-size: 12px">—</span>
           </template>
           <template v-else-if="column.key === 'uploader'">
             <a-tag v-if="record.createdByDisplayName" color="cyan">
               {{ record.createdByDisplayName }}
             </a-tag>
-            <span v-else style="color: #bbb; font-size: 12px">系统</span>
+            <span v-else style="color: var(--text-tertiary); font-size: 12px">系统</span>
           </template>
           <template v-else-if="column.key === 'status'">
             <a-tag :color="statusColor(record.status)">{{ statusLabel(record.status) }}</a-tag>
           </template>
           <template v-else-if="column.key === 'rating'">
             <a-rate :value="record.ratingAvg || 0" disabled allow-half :count="5" style="font-size: 12px" />
-            <span style="margin-left: 4px; color: #999; font-size: 12px">({{ record.ratingCount || 0 }})</span>
+            <span style="margin-left: 4px; color: var(--text-tertiary); font-size: 12px">({{ record.ratingCount || 0 }})</span>
           </template>
           <template v-else-if="column.key === 'sync'">
             <a-tag v-if="record.lastSyncStatus === 'success'" color="green">✓ {{ formatTime(record.lastSyncAt) }}</a-tag>
             <a-tag v-else-if="record.lastSyncStatus === 'failed'" color="red">✗ {{ formatTime(record.lastSyncAt) }}</a-tag>
             <a-tag v-else-if="record.lastSyncStatus === 'syncing'" color="blue">⟳ 同步中</a-tag>
-            <span v-else style="color: #bbb; font-size: 12px">—</span>
+            <span v-else style="color: var(--text-tertiary); font-size: 12px">—</span>
           </template>
           <template v-else-if="column.key === 'action'">
             <a-space :size="4" class="action-cell">
@@ -140,10 +140,10 @@
               </a>
               <template v-if="record.sourceType === 'GIT_URL'">
                 <a-divider type="vertical" />
-                <a style="color: #1677ff; cursor: pointer" @click="askSync(record)">同步</a>
+                <a style="color: var(--link); cursor: pointer" @click="askSync(record)">同步</a>
               </template>
               <a-divider type="vertical" />
-              <a style="color: #ff4d4f; cursor: pointer" @click="askDelete(record)">删除</a>
+              <a style="color: var(--danger); cursor: pointer" @click="askDelete(record)">删除</a>
             </a-space>
           </template>
         </template>
@@ -164,7 +164,7 @@
         确认删除 Skill
         <strong>{{ deleteModal.target?.displayName || deleteModal.target?.name }}</strong> ？
       </p>
-      <p style="color: #999; font-size: 12px">
+      <p style="color: var(--text-tertiary); font-size: 12px">
         ID: {{ deleteModal.target?.id }} · 此操作会同步删除
         <code>data/skill-packages/{{ deleteModal.target?.name }}/</code> 下的包文件，不可恢复
       </p>
@@ -557,16 +557,16 @@ onMounted(reload)
   padding: 0 4px;
 }
 
-/* 批量操作工具栏 */
+/* 批量操作工具栏 — S37: 跟随主题（浅=紫底 / 深=紫半透明） */
 .bulk-toolbar {
   margin-bottom: 12px;
   padding: 8px 12px;
-  background: #e6f4ff;
-  border: 1px solid #91caff;
+  background: var(--primary-bg);
+  border: 1px solid var(--primary-border);
   border-radius: 4px;
 }
 .bulk-toolbar__count {
-  color: #1677ff;
+  color: var(--link);
   font-size: 13px;
 }
 .bulk-toolbar__count strong {

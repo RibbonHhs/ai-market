@@ -3,7 +3,7 @@
     <div class="app-header__inner">
       <div class="app-header__left">
         <router-link to="/" class="app-header__logo">
-          <span class="logo-mark">S</span>
+          <img class="logo-mark" src="/logo.png" alt="SkillsMap logo" />
           <span class="logo-text">SkillsMap</span>
         </router-link>
         <a-menu
@@ -55,6 +55,10 @@
             </a-space>
             <template #overlay>
               <a-menu>
+                <a-menu-item key="upload" @click="openUploadModal" data-testid="menu-upload">
+                  <CloudUploadOutlined /> 上传我的 Skill
+                </a-menu-item>
+                <a-menu-divider />
                 <a-menu-item v-if="auth.isAdmin" key="admin" @click="goAdmin">
                   <DashboardOutlined /> 管理后台
                 </a-menu-item>
@@ -68,6 +72,7 @@
               </a-menu>
             </template>
           </a-dropdown>
+          <SkillUploadModal v-model:open="uploadModalOpen" @close="uploadModalOpen = false" />
         </template>
         <template v-else>
           <a-button class="auth-btn" @click="goLogin">登录</a-button>
@@ -108,8 +113,10 @@ import {
   LogoutOutlined,
   UserOutlined,
   MenuOutlined,
-  SearchOutlined
+  SearchOutlined,
+  CloudUploadOutlined
 } from '@ant-design/icons-vue'
+import SkillUploadModal from '@/components/SkillUploadModal.vue'
 
 const router = useRouter()
 const route = useRoute()
@@ -117,6 +124,7 @@ const auth = useAuthStore()
 const themeStore = useThemeStore()
 const searchKeyword = ref('')
 const drawerOpen = ref(false)
+const uploadModalOpen = ref(false)
 
 const currentRoute = computed(() => {
   const name = route.name?.toString() || ''
@@ -180,6 +188,10 @@ function goAdmin() {
 function goMe() {
   router.push('/me')
 }
+
+function openUploadModal() {
+  uploadModalOpen.value = true
+}
 </script>
 
 <style scoped lang="scss">
@@ -218,12 +230,8 @@ function goMe() {
     width: 32px;
     height: 32px;
     border-radius: 8px;
-    background: linear-gradient(135deg, var(--primary), #722ed1);
-    color: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 800;
+    display: block;
+    object-fit: contain;
   }
 }
 .app-header__menu {

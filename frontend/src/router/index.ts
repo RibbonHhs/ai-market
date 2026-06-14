@@ -74,6 +74,13 @@ const routes: RouteRecordRaw[] = [
     meta: { title: '个人中心', requiresAuth: true }
   },
   {
+    path: '/upload',
+    name: 'upload-skill',
+    // S40: 普通用户上传 Skill（首页 Hero CTA 入口）
+    component: () => import('@/views/UploadSkillView.vue'),
+    meta: { title: '上传 Skill', requiresAuth: true }
+  },
+  {
     path: '/admin',
     component: () => import('@/views/admin/AdminLayout.vue'),
     meta: { requiresAuth: true, requiresAdmin: true, layout: 'admin' },
@@ -94,8 +101,9 @@ const routes: RouteRecordRaw[] = [
       {
         path: 'skills/new',
         name: 'admin-skill-new',
-        component: () => import('@/views/admin/AdminSkillEditView.vue'),
-        meta: { title: '新建 Skill' }
+        // S38: 一段式上传页（drag + 表单 → 立即发布）
+        component: () => import('@/views/admin/AdminSkillsNewView.vue'),
+        meta: { title: '上传 Skill' }
       },
       {
         path: 'skills/:id/edit',

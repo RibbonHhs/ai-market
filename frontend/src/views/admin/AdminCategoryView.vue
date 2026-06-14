@@ -16,7 +16,7 @@
             <a @click="showModal(record)">编辑</a>
             <a-divider type="vertical" />
             <a-popconfirm title="确定删除？" @confirm="onDelete(record)">
-              <a style="color: #ff4d4f">删除</a>
+              <a style="color: var(--danger)">删除</a>
             </a-popconfirm>
           </a-space>
         </template>

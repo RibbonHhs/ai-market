@@ -4,6 +4,7 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.meiya.skillsmap.common.BizCode;
@@ -203,6 +204,20 @@ public class SkillServiceImpl extends ServiceImpl<SkillMapper, Skill> implements
             throw new BizException(BizCode.SKILL_NOT_FOUND);
         }
         return getDetail(skill.getId(), increaseView);
+    }
+
+    @Override
+    public void incrementInstalls(Long id) {
+        if (id == null) {
+            return;
+        }
+        // 单条 SQL，DB 端原子，避免并发 read-modify-write 丢失递增
+        boolean ok = update(null, new UpdateWrapper<Skill>()
+                .eq("id", id)
+                .setSql("installs = installs + 1"));
+        if (!ok) {
+            log.debug("incrementInstalls: skill id={} 不存在或未变更，跳过", id);
+        }
     }
 
     @Override

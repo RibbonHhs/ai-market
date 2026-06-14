@@ -1,0 +1,94 @@
+- generic [ref=e3]:
+  - generic [ref=e5]:
+    - generic [ref=e6]:
+      - link "SkillsMap logo SkillsMap" [ref=e7] [cursor=pointer]:
+        - /url: /
+        - img "SkillsMap logo" [ref=e8]
+        - generic [ref=e9]: SkillsMap
+      - menu [ref=e10]:
+        - menuitem "首页" [ref=e11] [cursor=pointer]:
+          - generic [ref=e12]: 首页
+        - menuitem "浏览" [ref=e13] [cursor=pointer]:
+          - generic [ref=e14]: 浏览
+        - menuitem "职业技能" [ref=e15] [cursor=pointer]:
+          - generic [ref=e16]: 职业技能
+        - menuitem "用途分类" [ref=e17] [cursor=pointer]:
+          - generic [ref=e18]: 用途分类
+        - generic:
+          - generic:
+            - img:
+              - img
+    - generic [ref=e21]:
+      - textbox "搜索 Skills..." [ref=e22]
+      - button "search" [ref=e24] [cursor=pointer]:
+        - img "search" [ref=e25]:
+          - img [ref=e26]
+    - generic [ref=e28]:
+      - 'button "当前主题: 暗色，点击切换为跟随系统" [ref=e29] [cursor=pointer]':
+        - generic [ref=e30]: 🌙
+      - button "登 录" [ref=e31] [cursor=pointer]:
+        - generic [ref=e32]: 登 录
+      - button "注 册" [ref=e33] [cursor=pointer]:
+        - generic [ref=e34]: 注 册
+  - main [ref=e35]:
+    - generic [ref=e37]:
+      - generic [ref=e38]: SKILLSMAP / SKILLS MARKETPLACE
+      - heading "Skills Marketplace" [level=1] [ref=e39]
+      - paragraph [ref=e40]: 发现与分享 Claude Code 及所有 SKILL.md 工具的开源 Agent Skills。
+      - generic [ref=e41]:
+        - generic [ref=e42]:
+          - button "我是人类" [ref=e43] [cursor=pointer]:
+            - generic [ref=e44]: 👤
+            - generic [ref=e45]: 我是人类
+          - button "我是智能体" [ref=e46] [cursor=pointer]:
+            - generic [ref=e47]: 🤖
+            - generic [ref=e48]: 我是智能体
+        - generic [ref=e49]:
+          - generic [ref=e50]: ⌕
+          - textbox "搜索 Skills" [ref=e51]
+          - button "搜索" [ref=e52] [cursor=pointer]:
+            - generic [ref=e53]: ✦
+            - generic [ref=e54]: 搜索
+        - generic [ref=e56]:
+          - img [ref=e58]
+          - paragraph [ref=e70]: 热门 skills 加载中…
+    - generic [ref=e72]:
+      - generic [ref=e73]:
+        - generic [ref=e74]: M
+        - generic [ref=e75]:
+          - heading "第一次使用 Skill?" [level=3] [ref=e76]
+          - paragraph [ref=e77]: 不知道从哪开始？3 分钟带你了解 Skills 是什么、怎么安装、怎么用 API 接入。
+        - button "开始新手指引 →" [ref=e78] [cursor=pointer]
+      - generic [ref=e79]:
+        - generic [ref=e80]:
+          - generic [ref=e81]: "0"
+          - generic [ref=e82]: 可用 Skills
+        - generic [ref=e83]:
+          - generic [ref=e84]: 50+
+          - generic [ref=e85]: 支持平台
+        - generic [ref=e86]:
+          - generic [ref=e87]: CL5
+          - generic [ref=e88]: 安全检查
+    - generic [ref=e89]:
+      - generic [ref=e90]:
+        - heading "🌿 精选 Skills 榜单 🌿" [level=2] [ref=e91]
+        - paragraph [ref=e92]: 人工筛选全网最实用的 Skills，严格安全认证，国内镜像下载加速
+      - generic [ref=e93]:
+        - complementary [ref=e94]:
+          - button "精选 Top 0" [ref=e95] [cursor=pointer]
+        - generic [ref=e97]:
+          - img [ref=e99]
+          - paragraph [ref=e111]: 该分类下暂无精选
+    - generic [ref=e113]:
+      - heading "🌿 热门 Skills 🌿" [level=2] [ref=e114]
+      - generic [ref=e115]:
+        - button "总排行" [ref=e116] [cursor=pointer]:
+          - generic [ref=e117]: 📊
+          - generic [ref=e118]: 总排行
+        - button "近期最热" [ref=e119] [cursor=pointer]:
+          - generic [ref=e120]: 🔥
+          - generic [ref=e121]: 近期最热
+        - button "最新上传" [ref=e122] [cursor=pointer]:
+          - generic [ref=e123]: 🆕
+          - generic [ref=e124]: 最新上传
+  - generic [ref=e125]: SkillsMap · Built with ❤️ by 苏幕雨 · MIT

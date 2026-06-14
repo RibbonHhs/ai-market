@@ -31,6 +31,11 @@ spring:
   sql:
     init:
       mode: never
+  # S38: prod multipart 覆盖 — 与 dev 一致（10MB / 12MB）
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 12MB
 
 # 生产关闭 Knife4j / springdoc（配合 nginx /doc.html 404 双重防护）
 springdoc:
@@ -76,3 +81,6 @@ skillsmap:
   storage:
     git:
       enabled: ${SKILLSMAP_GIT_ENABLED:false}
+  # S38: 用户上传临时目录（prod 默认 /data/skillsmap/upload-tmp，dev 默认系统 tmpdir + /skill-upload）
+  upload:
+    tmp-dir: ${SKILLSMAP_UPLOAD_TMP_DIR:/data/skillsmap/upload-tmp}

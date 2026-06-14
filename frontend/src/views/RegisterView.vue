@@ -3,17 +3,22 @@
     <div class="auth-card">
       <h1 class="auth-title">🌱 注册账号</h1>
       <p class="auth-subtitle">加入 SkillsMap 社区</p>
-      <a-form layout="vertical" @finish="onSubmit">
-        <a-form-item label="用户名" required>
+      <a-form
+        layout="vertical"
+        :model="form"
+        :rules="rules"
+        @finish="onSubmit"
+      >
+        <a-form-item label="用户名" name="username" :rules="rules.username">
           <a-input v-model:value="form.username" size="large" placeholder="字母数字下划线，3-20 位" />
         </a-form-item>
-        <a-form-item label="邮箱">
+        <a-form-item label="邮箱" name="email">
           <a-input v-model:value="form.email" size="large" placeholder="可选" />
         </a-form-item>
-        <a-form-item label="显示名">
+        <a-form-item label="显示名" name="displayName">
           <a-input v-model:value="form.displayName" size="large" placeholder="可选" />
         </a-form-item>
-        <a-form-item label="密码" required>
+        <a-form-item label="密码" name="password" :rules="rules.password">
           <a-input-password v-model:value="form.password" size="large" placeholder="至少 6 位" />
         </a-form-item>
         <a-button type="primary" html-type="submit" size="large" block :loading="loading">注册</a-button>
@@ -36,11 +41,23 @@ const auth = useAuthStore()
 const loading = ref(false)
 const form = reactive({ username: '', email: '', displayName: '', password: '' })
 
+const rules = {
+  username: [
+    { required: true, message: '请输入用户名', trigger: 'blur' },
+    { min: 3, max: 20, message: '用户名长度 3-20', trigger: 'blur' },
+    {
+      pattern: /^[a-zA-Z0-9_-]+$/,
+      message: '用户名只能含字母数字下划线连字符',
+      trigger: 'blur'
+    }
+  ],
+  password: [
+    { required: true, message: '请输入密码', trigger: 'blur' },
+    { min: 6, message: '密码至少 6 位', trigger: 'blur' }
+  ]
+}
+
 async function onSubmit() {
-  if (form.password.length < 6) {
-    message.warning('密码至少 6 位')
-    return
-  }
   loading.value = true
   try {
     await auth.register(form.username, form.password, form.email, form.displayName)
@@ -51,6 +68,8 @@ async function onSubmit() {
   } catch (e: any) {
     if (e?.bizResponse?.code === 50004 || e?.code === 50004) {
       message.error('用户名已存在')
+    } else {
+      message.error(e?.bizResponse?.message || e?.message || '注册失败')
     }
   } finally {
     loading.value = false

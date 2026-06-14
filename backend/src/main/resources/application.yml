@@ -17,8 +17,9 @@ spring:
     default-property-inclusion: non_null
   servlet:
     multipart:
-      max-file-size: 20MB
-      max-request-size: 20MB
+      # S38: 用户上传端点 — 限制单文件 10MB / 单请求 12MB（multipart 多预留 2MB 给其他字段）
+      max-file-size: 10MB
+      max-request-size: 12MB
 
 # Knife4j / springdoc
 springdoc:
@@ -96,6 +97,9 @@ skillsmap:
     sync-cron: ${SKILLSMAP_GIT_SOURCE_CRON:0 0 */1 * * *}        # every 60 min
     stale-threshold-minutes: ${SKILLSMAP_GIT_SOURCE_STALE:60}
     max-concurrent: ${SKILLSMAP_GIT_SOURCE_CONCURRENT:3}
+  # Sprint S38: 用户上传端点 — 临时目录（dev 默认系统 tmpdir，prod 覆盖 /data/skillsmap/upload-tmp）
+  upload:
+    tmp-dir: ${SKILLSMAP_UPLOAD_TMP_DIR:#{T(java.lang.System).getProperty('java.io.tmpdir') + '/skill-upload'}}
 
 logging:
   level:

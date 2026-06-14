@@ -12,7 +12,6 @@
             <span class="hero__count">{{ totalSubGroups }}</span>
             {{ heroCountUnit2 }}
           </p>
-          <p class="hero__sub">{{ heroSub }}</p>
         </header>
 
         <hr class="hero__divider" />
@@ -79,11 +78,6 @@ const heroTitle = computed(() =>
 )
 const heroCountUnit1 = computed(() => (isSoc.value ? '个主要职业组' : '个一级分类'))
 const heroCountUnit2 = computed(() => (isSoc.value ? '个细分职位' : '个细分用途'))
-const heroSub = computed(() =>
-  isSoc.value
-    ? '按美国劳工部职业分类标准（Standard Occupational Classification, 2018）组织'
-    : '按 Skill 在实际工作流中的主要用途归类'
-)
 const emptyText = computed(() => (isSoc.value ? '暂无职业分类' : '暂无用途分类'))
 
 onMounted(async () => {
@@ -139,15 +133,6 @@ onMounted(async () => {
     font-size: 15px;
     margin: 14px 0 0;
     font-weight: 400;
-  }
-
-  &__sub {
-    color: #9ca3af !important;
-    font-size: 13px !important;
-    max-width: 640px;
-    margin-left: auto !important;
-    margin-right: auto;
-    line-height: 1.5;
   }
 
   &__count {

@@ -62,5 +62,13 @@ public interface SkillService extends IService<Skill> {
      * <p>优先打包本地 data/skill-packages/{name}/ 目录；否则从 DB 字段动态重建 SKILL.md
      */
     void exportZip(Long skillId, OutputStream out) throws IOException;
+
+    /**
+     * 原子地将指定 skill 的 installs 计数 +1。
+     * <p>走单条 SQL {@code UPDATE skill SET installs=installs+1 WHERE id=?}，DB 端原子，
+     * 避免 read-modify-write 的并发丢失。
+     * <p>id 不存在或 id=null 时 no-op，不抛异常——下载失败不应被计数副作用牵连。
+     */
+    void incrementInstalls(Long id);
 }
 

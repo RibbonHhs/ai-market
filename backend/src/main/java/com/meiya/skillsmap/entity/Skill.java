@@ -143,6 +143,12 @@ public class Skill implements Serializable {
     @TableField("created_by_user_id")
     private Long createdByUserId;
 
+    // ===== Sprint S38: 用户上传端点新增字段 =====
+    /** 上传者 user id（FK → user.id ON DELETE SET NULL）。
+     *  与 created_by_user_id 解耦：MVP 暂存同值；ADMIN 代上传时二者不同。 */
+    @TableField("uploader_user_id")
+    private Long uploaderUserId;
+
     @TableField("create_time")
     private LocalDateTime createTime;
 
@@ -215,6 +221,8 @@ public class Skill implements Serializable {
     public void setFeatured(Boolean featured) { this.featured = featured; }
     public Long getCreatedByUserId() { return createdByUserId; }
     public void setCreatedByUserId(Long createdByUserId) { this.createdByUserId = createdByUserId; }
+    public Long getUploaderUserId() { return uploaderUserId; }
+    public void setUploaderUserId(Long uploaderUserId) { this.uploaderUserId = uploaderUserId; }
     public String getSourceType() { return sourceType; }
     public void setSourceType(String sourceType) { this.sourceType = sourceType; }
     public String getSourceUrl() { return sourceUrl; }

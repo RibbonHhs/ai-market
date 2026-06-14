@@ -1,0 +1,122 @@
+- generic [ref=e3]:
+  - complementary [ref=e4]:
+    - generic [ref=e5]:
+      - generic [ref=e6]:
+        - img "SkillsMap logo" [ref=e7]
+        - generic [ref=e8]: Admin
+      - menu [ref=e9]:
+        - menuitem "dashboard Dashboard" [ref=e10] [cursor=pointer]:
+          - generic [ref=e11]:
+            - img "dashboard" [ref=e12]:
+              - img [ref=e13]
+            - text: Dashboard
+        - menuitem "appstore Skills" [ref=e15] [cursor=pointer]:
+          - generic [ref=e16]:
+            - img "appstore" [ref=e17]:
+              - img [ref=e18]
+            - text: Skills
+        - menuitem "folder 职业技能" [ref=e20] [cursor=pointer]:
+          - generic [ref=e21]:
+            - img "folder" [ref=e22]:
+              - img [ref=e23]
+            - text: 职业技能
+        - menuitem "tags 用途分类" [ref=e25] [cursor=pointer]:
+          - generic [ref=e26]:
+            - img "tags" [ref=e27]:
+              - img [ref=e28]
+            - text: 用途分类
+        - menuitem "tags 标签" [ref=e30] [cursor=pointer]:
+          - generic [ref=e31]:
+            - img "tags" [ref=e32]:
+              - img [ref=e33]
+            - text: 标签
+        - menuitem "team 用户" [ref=e35] [cursor=pointer]:
+          - generic [ref=e36]:
+            - img "team" [ref=e37]:
+              - img [ref=e38]
+            - text: 用户
+    - img "left" [ref=e41] [cursor=pointer]:
+      - img [ref=e42]
+  - generic [ref=e44]:
+    - generic [ref=e45]:
+      - button "home 返回前台" [ref=e48] [cursor=pointer]:
+        - img "home" [ref=e49]:
+          - img [ref=e50]
+        - generic [ref=e52]: 返回前台
+      - generic [ref=e53]:
+        - generic [ref=e55]: 👑 Administrator
+        - button "logout 退出" [ref=e57] [cursor=pointer]:
+          - img "logout" [ref=e58]:
+            - img [ref=e59]
+          - generic [ref=e61]: 退出
+    - main [ref=e62]:
+      - generic [ref=e63]:
+        - heading "📊 Dashboard" [level=2] [ref=e64]
+        - generic [ref=e65]:
+          - generic [ref=e69]:
+            - generic [ref=e70]: Skills
+            - generic [ref=e71]:
+              - img "appstore" [ref=e73]:
+                - img [ref=e74]
+              - generic [ref=e77]: "0"
+          - generic [ref=e81]:
+            - generic [ref=e82]: 分类
+            - generic [ref=e83]:
+              - img "folder" [ref=e85]:
+                - img [ref=e86]
+              - generic [ref=e89]: "0"
+          - generic [ref=e93]:
+            - generic [ref=e94]: 标签
+            - generic [ref=e95]:
+              - img "tags" [ref=e97]:
+                - img [ref=e98]
+              - generic [ref=e101]: "0"
+          - generic [ref=e105]:
+            - generic [ref=e106]: 用户
+            - generic [ref=e107]:
+              - img "team" [ref=e109]:
+                - img [ref=e110]
+              - generic [ref=e113]: "0"
+        - generic [ref=e114]:
+          - generic [ref=e116]:
+            - generic [ref=e119]: 📈 Skill 来源分布
+            - generic [ref=e125]:
+              - img [ref=e127]
+              - paragraph [ref=e133]: 暂无数据
+          - generic [ref=e135]:
+            - generic [ref=e138]: 🚀 快速操作
+            - generic [ref=e140]:
+              - button "plus 新建 Skill" [ref=e142] [cursor=pointer]:
+                - img "plus" [ref=e143]:
+                  - img [ref=e144]
+                - generic [ref=e147]: 新建 Skill
+              - button "cloud-download 从本地 SKILL.md 导入" [ref=e149] [cursor=pointer]:
+                - img "cloud-download" [ref=e150]:
+                  - img [ref=e151]
+                - generic [ref=e154]: 从本地 SKILL.md 导入
+              - button "reload 刷新分类计数" [ref=e156] [cursor=pointer]:
+                - img "reload" [ref=e157]:
+                  - img [ref=e158]
+                - generic [ref=e160]: 刷新分类计数
+        - generic [ref=e163]:
+          - generic [ref=e166]: 🌿 Git 同步状态
+          - generic [ref=e167]:
+            - generic [ref=e168]:
+              - generic [ref=e170]:
+                - generic [ref=e171]: 状态
+                - generic [ref=e173]: 未启用（仅本地）
+              - generic [ref=e175]:
+                - generic [ref=e176]: 成功推送
+                - generic [ref=e179]: "0"
+              - generic [ref=e181]:
+                - generic [ref=e182]: 推送失败
+                - generic [ref=e185]: "0"
+              - generic [ref=e187]:
+                - generic [ref=e188]: 最后同步
+                - generic [ref=e190]: —
+            - alert [ref=e191]:
+              - img "info-circle" [ref=e192]:
+                - img [ref=e193]
+              - generic [ref=e196]:
+                - generic [ref=e197]: Git 同步未启用
+                - generic [ref=e198]: 设置 skillsmap.storage.git.enabled=true 并配置 repoUrl/username/token 即可启用

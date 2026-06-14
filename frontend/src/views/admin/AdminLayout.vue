@@ -2,7 +2,7 @@
   <a-layout class="admin-layout">
     <a-layout-sider v-model:collapsed="collapsed" collapsible>
       <div class="logo">
-        <span class="logo-mark">S</span>
+        <img class="logo-mark" src="/logo_dark.png" alt="SkillsMap logo" />
         <span v-if="!collapsed" class="logo-text">Admin</span>
       </div>
       <a-menu
@@ -18,6 +18,10 @@
         <a-menu-item key="/admin/skills">
           <AppstoreOutlined />
           <span>Skills</span>
+        </a-menu-item>
+        <a-menu-item key="/admin/skills/new">
+          <CloudUploadOutlined />
+          <span>上传 Skill</span>
         </a-menu-item>
         <a-menu-item key="/admin/categories">
           <FolderOutlined />
@@ -65,6 +69,7 @@ import { useAuthStore } from '@/stores/auth'
 import {
   DashboardOutlined,
   AppstoreOutlined,
+  CloudUploadOutlined,
   FolderOutlined,
   TagsOutlined,
   TeamOutlined,
@@ -97,6 +102,7 @@ async function onLogout() {
   align-items: center;
   gap: 8px;
   padding: 0 16px;
+  // 侧栏 antdv theme="dark" 始终深色，文字保留白色是 antdv 设计语义
   color: #fff;
   font-size: 18px;
   font-weight: 700;
@@ -105,26 +111,34 @@ async function onLogout() {
     width: 32px;
     height: 32px;
     border-radius: 8px;
-    background: linear-gradient(135deg, #1677ff, #722ed1);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #fff;
-    font-weight: 800;
+    display: block;
+    object-fit: contain;
   }
 }
 .admin-header {
-  background: #fff;
-  border-bottom: 1px solid #f0f0f0;
+  // S37: 去硬编码，跟随主题切换（浅=白，深=深紫黑）
+  background: var(--bg-primary);
+  border-bottom: 1px solid var(--border);
   padding: 0 24px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   height: 64px;
+  // Header 内的暗色按钮在暗色下需要显式提升对比度（antdv defaultAlgorithm 自动处理，但 type="text" 仍需保底）
+  :deep(.ant-btn-text) {
+    color: var(--text-primary);
+  }
 }
 .admin-content {
+  // S37: 去硬编码，浅=浅灰、深=深紫，建立与 body 的层级差
   padding: 24px;
-  background: #f5f7fa;
+  background: var(--bg-secondary);
   min-height: calc(100vh - 64px);
+  // 内容区内的 page-header / card 标题靠 antdv 算法产出，自动跟随主题
+  // 这里只做保底：万一 antdv 算法未覆盖，强制标题层级使用主文字色
+  :deep(.ant-page-header-heading-title),
+  :deep(.ant-card-head-title) {
+    color: var(--text-primary);
+  }
 }
 </style>

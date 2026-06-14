@@ -12,7 +12,7 @@
       <HomeHot ref="hotRef" :usage-categories="usageCategories" />
     </a-layout-content>
     <a-layout-footer class="app-footer">
-      SkillsMap · Built with ❤️ by SkillsMap Team · MIT
+      SkillsMap · Built with ❤️ by 苏幕雨 · MIT
     </a-layout-footer>
   </a-layout>
 </template>

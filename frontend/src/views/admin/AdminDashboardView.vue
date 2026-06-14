@@ -52,14 +52,14 @@
               <a-statistic
                 title="状态"
                 :value="gitStatus.enabled ? (gitStatus.ready ? '运行中' : '启用但未就绪') : '未启用（仅本地）'"
-                :value-style="{ color: gitStatus.enabled && gitStatus.ready ? '#52c41a' : '#999' }"
+                :value-style="{ color: gitStatus.enabled && gitStatus.ready ? 'var(--success)' : 'var(--text-tertiary)' }"
               />
             </a-col>
             <a-col :xs="24" :sm="6">
-              <a-statistic title="成功推送" :value="gitStatus.successCount" :value-style="{ color: '#52c41a' }" />
+              <a-statistic title="成功推送" :value="gitStatus.successCount" :value-style="{ color: 'var(--success)' }" />
             </a-col>
             <a-col :xs="24" :sm="6">
-              <a-statistic title="推送失败" :value="gitStatus.failureCount" :value-style="{ color: gitStatus.failureCount > 0 ? '#ff4d4f' : '#999' }" />
+              <a-statistic title="推送失败" :value="gitStatus.failureCount" :value-style="{ color: gitStatus.failureCount > 0 ? 'var(--danger)' : 'var(--text-tertiary)' }" />
             </a-col>
             <a-col :xs="24" :sm="6">
               <a-statistic title="最后同步" :value="gitStatus.lastSyncAt || '—'" />
@@ -112,10 +112,11 @@ import { skillApi, categoryApi, tagApi } from '@/api/skill'
 import { adminApi } from '@/api/admin'
 
 const stats = ref([
-  { label: 'Skills', value: 0, color: '#1677ff', icon: () => h(AppstoreOutlined) },
-  { label: '分类', value: 0, color: '#722ed1', icon: () => h(FolderOutlined) },
-  { label: '标签', value: 0, color: '#13c2c2', icon: () => h(TagsOutlined) },
-  { label: '用户', value: 0, color: '#fa8c16', icon: () => h(TeamOutlined) }
+  // S37: 把硬编码 hex 替换为 CSS 变量，避免暗色下低对比
+  { label: 'Skills', value: 0, color: 'var(--link)', icon: () => h(AppstoreOutlined) },
+  { label: '分类', value: 0, color: 'var(--primary)', icon: () => h(FolderOutlined) },
+  { label: '标签', value: 0, color: 'var(--success)', icon: () => h(TagsOutlined) },
+  { label: '用户', value: 0, color: 'var(--warning)', icon: () => h(TeamOutlined) }
 ])
 
 const sourceStats = ref<Array<{ label: string; count: number; percent: number }>>([])

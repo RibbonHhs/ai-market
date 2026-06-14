@@ -81,8 +81,8 @@ export const useAuthStore = defineStore('auth', {
       return data
     },
 
-    async register(username: string, password: string, email?: string) {
-      return ajax.post<UserInfo>('/auth/register', { username, password, email })
+    async register(username: string, password: string, email?: string, displayName?: string) {
+      return ajax.post<UserInfo>('/auth/register', { username, password, email, displayName })
     },
 
     async fetchUserInfo() {
