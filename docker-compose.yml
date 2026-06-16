@@ -1,5 +1,3 @@
-001version: '3.8'+3256
-
 services:
   mysql:
     image: mysql:8.3
@@ -18,7 +16,7 @@ services:
     ports:
       - "3306:3306"
     volumes:
-      - mysql_data:/var/lib/mysql
+      - ./data/mysql:/var/lib/mysql
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-u", "skillsmap", "-pskillsmap"]
       interval: 10s
@@ -51,6 +49,8 @@ services:
     volumes:
       - ./seed-data/skills:/seed/skills:ro
       - ./seed-data/plugins:/seed/plugins:ro
+      - ./data/backend/data:/app/data
+      - ./data/backend/logs:/app/logs
 
   frontend:
     build: ./frontend
@@ -62,5 +62,6 @@ services:
       - "7777:80"
 
 volumes:
+  # legacy named volume 声明保留（无 mount 引用），新数据走下方 bind mount
   mysql_data:
-    name: skillsmap_mysql_data
+    name: skillsmap_mysql_data  # legacy named volume (保留声明但不再 mount；新数据走 ./data/mysql bind mount)

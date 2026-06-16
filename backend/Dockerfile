@@ -1,37 +1,25 @@
-# Backend Dockerfile
-# 多阶段构建：Maven 编译 + 运行时 JRE 21
-# Sprint S02: 增加 git binary 安装（备查 / 手动运维时用；运行时实际走 JGit）
+# Backend Dockerfile (runtime-only)
+# 本地预编译：./mvnw clean package -DskipTests  →  backend/target/skills-map-backend.jar
+# 服务器只装 JRE + COPY 预编译 jar；不再跑 Maven，体积小，构建快
+FROM openjdk:21-alpine
 
-# ============ 构建阶段 ============
-FROM maven:3.9-eclipse-temurin-21 AS builder
-WORKDIR /build
-COPY pom.xml .
-RUN mvn -B dependency:go-offline
-COPY src ./src
-RUN mvn -B clean package -DskipTests
-
-# ============ 运行时阶段 ============
-# Sprint H4: 固定 patch 版本（避免浮动到 broken 版本拖死 prod）
-FROM eclipse-temurin:21.0.2_13-jre-jammy
-WORKDIR /app
-
-# Sprint S02: 预装 git（诊断 / 手动运维用；运行时由 JGit 处理 SSH 之外的常见协议）
-RUN apt-get update && apt-get install -y --no-install-recommends \
+# 装 curl（健康检查 / 诊断）+ git（运维排错用，运行时实际走 JGit）+ ca-certificates
+# 不装 tzdata：用 JVM -Duser.timezone 替代（避免 alpine 仓库拉包抽风）
+RUN apk add --no-cache \
     curl \
     git \
-    ca-certificates \
-    && rm -rf /var/lib/apt/lists/*
+    ca-certificates
 
-# 设置时区
+# 时区（用 JVM 参数控制；不依赖 /usr/share/zoneinfo）
 ENV TZ=Asia/Shanghai
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
-COPY --from=builder /build/target/skills-map-backend.jar /app/app.jar
+WORKDIR /app
 
-# Sprint S02: 显式创建 skill-clones 目录（Git 源缓存），持久化卷挂载点
-# Sprint H4: 创建非 root 用户 + 切主（满足 CIS-Docker 4.1）
-# Sprint H5: 预创建 /app/logs（logback-spring.xml 落盘点）
-RUN groupadd -r app && useradd -r -g app -d /app -s /sbin/nologin app \
+# 预编译产物（本地 mvnw package 产出）
+COPY target/skills-map-backend.jar /app/app.jar
+
+# 非 root 运行 + 预创建持久化目录（Alpine BusyBox addgroup/adduser）
+RUN addgroup -S app && adduser -S -G app -h /app -s /sbin/nologin -D app \
     && mkdir -p /app/logs /app/data/skill-clones /app/data/skill-packages \
     && chown -R app:app /app
 USER app
@@ -41,7 +29,7 @@ EXPOSE 8767
 HEALTHCHECK --interval=30s --timeout=5s --retries=3 \
   CMD curl -f http://localhost:8767/actuator/health || exit 1
 
-ENV JAVA_OPTS="-Xms256m -Xmx512m -Djava.security.egd=file:/dev/./urandom"
-ENV SPRING_PROFILES_ACTIVE=prod
+ENV JAVA_OPTS="-Xms256m -Xmx512m -Duser.timezone=Asia/Shanghai -Djava.security.egd=file:/dev/./urandom"
+ENV SPRING_PROFILES_ACTIVE=local
 
 ENTRYPOINT ["sh", "-c", "exec java $JAVA_OPTS -jar /app/app.jar"]

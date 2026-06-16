@@ -55,6 +55,10 @@ dist/
 build/
 out/
 
+# Runtime data (bind mount 落点；备份请用 scripts/backup-mysql.sh / docker cp)
+# /data/ 在项目根，由 docker-compose.yml 的 ./data/mysql、./data/backend/{data,logs} 使用
+/data/
+
 # Test
 coverage/
 .nyc_output/
