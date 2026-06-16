@@ -506,6 +506,18 @@ public class SkillSeedService {
      * 用于随后的物化步骤。
      */
     private Path resolveClasspathRoot() {
+        log.info("[seed] resolveClasspathRoot: probing classpath");
+        // 1. 优先从本类所在 jar 拆（绕过 Spring Boot 3.x nested: 协议坑）
+        try {
+            Path fromJar = extractClasspathSkillsFromCodeSource();
+            if (fromJar != null) {
+                log.info("[seed] resolveClasspathRoot: from jar = {}", fromJar);
+                return fromJar;
+            }
+        } catch (Exception e) {
+            log.warn("[seed] extractClasspathSkillsFromCodeSource threw: {}", e.getMessage());
+        }
+        // 2. 兜底：ClassLoader.getResource
         try {
             java.net.URL url = SkillSeedService.class.getClassLoader().getResource("skills");
             if (url == null) return null;
@@ -521,9 +533,93 @@ public class SkillSeedService {
             }
             return Paths.get(url.toURI());
         } catch (Exception e) {
-            log.warn("[seed] resolveClasspathRoot failed: {}", e.getMessage());
+            log.warn("[seed] resolveClasspathRoot fallback failed: {}", e.getMessage());
             return null;
         }
+    }
+
+    /**
+     * 直接从本类所在 jar 拆出 BOOT-INF/classes/skills/ 到临时目录。
+     * 适配 Spring Boot 3.x LaunchedClassLoader 暴露的 nested: 协议。
+     * 简化版：直接尝试常见 jar 路径（生产 Dockerfile COPY /app/app.jar）。
+     */
+    private Path extractClasspathSkillsFromCodeSource() {
+        log.info("[seed] extractClasspathSkillsFromCodeSource: scanning known jar locations");
+        // 1. 优先从 ProtectionDomain 拿（IDE / 普通 jar 包时）
+        try {
+            java.security.CodeSource cs = SkillSeedService.class.getProtectionDomain().getCodeSource();
+            if (cs != null && cs.getLocation() != null && "file".equals(cs.getLocation().getProtocol())) {
+                java.io.File f = new java.io.File(cs.getLocation().toURI());
+                if (f.isFile() && f.getName().endsWith(".jar")) {
+                    Path r = unzipSkillsFromJar(f);
+                    if (r != null) {
+                        log.info("[seed] extracted classpath skills from {}", f.getAbsolutePath());
+                        return r;
+                    }
+                } else if (f.isDirectory()) {
+                    Path p = f.toPath().resolve("skills");
+                    if (Files.isDirectory(p)) return p;
+                }
+            }
+        } catch (Exception e) {
+            log.warn("[seed] ProtectionDomain lookup failed: {}", e.getMessage());
+        }
+        // 2. 兜底：硬编码常见路径（Dockerfile COPY /app/app.jar）
+        String[] fallbacks = {"/app/app.jar", "/opt/app.jar",
+                System.getProperty("user.dir") + "/app.jar",
+                new java.io.File(".").getAbsolutePath() + "/app.jar"};
+        for (String p : fallbacks) {
+            java.io.File f = new java.io.File(p);
+            log.info("[seed] try candidate: {} (exists={})", p, f.isFile());
+            if (f.isFile() && f.getName().endsWith(".jar")) {
+                try {
+                    Path r = unzipSkillsFromJar(f);
+                    if (r != null) {
+                        log.info("[seed] extracted classpath skills from fallback {}", f.getAbsolutePath());
+                        return r;
+                    }
+                } catch (Exception e) {
+                    log.warn("[seed] unzip {} failed: {}", p, e.getMessage());
+                }
+            }
+        }
+        log.warn("[seed] no jar candidate found, classpath skills unavailable");
+        return null;
+    }
+
+    private Path unzipSkillsFromJar(java.io.File jarFile) throws java.io.IOException {
+        if (!jarFile.isFile() || !jarFile.getName().endsWith(".jar")) return null;
+        java.io.File tmp = java.io.File.createTempFile("skills-", "-src");
+        tmp.delete();
+        tmp.mkdirs();
+        Path root = tmp.toPath();
+        try (java.util.zip.ZipFile zf = new java.util.zip.ZipFile(jarFile)) {
+            java.util.Enumeration<? extends java.util.zip.ZipEntry> en = zf.entries();
+            while (en.hasMoreElements()) {
+                java.util.zip.ZipEntry e = en.nextElement();
+                String name = e.getName();
+                String rel;
+                if (name.startsWith("BOOT-INF/classes/skills/")) {
+                    rel = name.substring("BOOT-INF/classes/".length());
+                } else if (name.startsWith("skills/")) {
+                    rel = name;
+                } else {
+                    continue;
+                }
+                Path out = root.resolve(rel).normalize();
+                if (!out.startsWith(root)) continue;
+                if (e.isDirectory()) {
+                    Files.createDirectories(out);
+                } else {
+                    Files.createDirectories(out.getParent());
+                    try (java.io.InputStream in = zf.getInputStream(e)) {
+                        Files.copy(in, out, java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+                    }
+                }
+            }
+        }
+        Path skills = root.resolve("skills");
+        return Files.isDirectory(skills) ? skills : null;
     }
 
     /**
@@ -531,28 +627,42 @@ public class SkillSeedService {
      * <p>每个子目录若有 SKILL.md 即视为一个 skill。
      * <p>来源标记为 {@code official-bundled} 以区别于用户/插件来源。
      * <p>用于把 skills-manager 等系统级 skill 随 jar 一同发布，确保 slug 可在 /api/skills 查到。
+     * 修复：Spring Boot 3.x nested: 协议下走 extractClasspathSkillsFromCodeSource() 拆 jar。
      */
     private int scanClasspathSkills() {
         try {
-            java.net.URL url = SkillSeedService.class.getClassLoader().getResource("skills");
-            if (url == null) {
-                log.info("[seed] no classpath:skills/ found, skip");
-                return 0;
+            // 1. 优先从本类所在 jar 拆（绕开 nested: 协议坑）
+            Path root = null;
+            try {
+                root = extractClasspathSkillsFromCodeSource();
+            } catch (Exception e) {
+                log.warn("[seed] scanClasspathSkills: extractFromCodeSource threw: {}", e.getMessage());
             }
-            Path root;
-            if ("jar".equals(url.getProtocol())) {
-                // 拆 jar 拷贝到临时目录再扫
-                java.io.File tmp = java.io.File.createTempFile("skills-", "-cp");
-                tmp.delete();
-                tmp.mkdirs();
-                root = tmp.toPath();
-                try (java.util.stream.Stream<Path> walk = Files.walk(extractFromJar(url, root))) {
-                    walk.forEach(p -> {});
+            // 2. 兜底：ClassLoader.getResource
+            if (root == null) {
+                try {
+                    java.net.URL url = SkillSeedService.class.getClassLoader().getResource("skills");
+                    if (url == null) {
+                        log.info("[seed] no classpath:skills/ found, skip");
+                        return 0;
+                    }
+                    if ("jar".equals(url.getProtocol())) {
+                        java.io.File tmp = java.io.File.createTempFile("skills-", "-cp");
+                        tmp.delete();
+                        tmp.mkdirs();
+                        root = tmp.toPath();
+                        try (java.util.stream.Stream<Path> walk = Files.walk(extractFromJar(url, root))) {
+                            walk.forEach(p -> {});
+                        }
+                    } else {
+                        root = Paths.get(url.toURI());
+                    }
+                } catch (Exception e) {
+                    log.warn("[seed] scanClasspathSkills fallback failed: {}", e.getMessage());
+                    return 0;
                 }
-            } else {
-                root = Paths.get(url.toURI());
             }
-            if (!Files.isDirectory(root)) {
+            if (root == null || !Files.isDirectory(root)) {
                 log.warn("[seed] classpath:skills/ not a dir: {}", root);
                 return 0;
             }

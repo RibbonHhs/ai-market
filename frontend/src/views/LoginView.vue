@@ -10,23 +10,16 @@
         @finish="onSubmit"
       >
         <a-form-item label="用户名" name="username" :rules="rules.username">
-          <a-input v-model:value="form.username" size="large" placeholder="admin" />
+          <a-input v-model:value="form.username" size="large" placeholder="请输入用户名" />
         </a-form-item>
         <a-form-item label="密码" name="password" :rules="rules.password">
-          <a-input-password v-model:value="form.password" size="large" placeholder="admin123" />
+          <a-input-password v-model:value="form.password" size="large" placeholder="请输入密码" />
         </a-form-item>
         <a-button type="primary" html-type="submit" size="large" block :loading="loading">登录</a-button>
       </a-form>
       <div class="auth-tip">
         还没有账号？<router-link to="/register">立即注册</router-link>
       </div>
-      <a-alert
-        type="info"
-        show-icon
-        style="margin-top: 16px"
-        message="默认账号"
-        description="admin / admin123 (管理员) 或 user / user123 (普通用户)"
-      />
     </div>
   </a-layout>
 </template>
